@@ -57,14 +57,14 @@ NSString* getShaderPath(const char* relative_path){
     
     
     // Create and compile vertex shader.
-    vertShaderPathname = getShaderPath("shaders/color_shader.vsh");
+    vertShaderPathname = getShaderPath("shaders/cube_shader.vsh");
     if (![self compileShader:&vertShader type:GL_VERTEX_SHADER file:vertShaderPathname]) {
         NSLog(@"Failed to compile vertex shader");
         return NO;
     }
     
     // Create and compile fragment shader.
-    fragShaderPathname = getShaderPath("shaders/color_shader.fsh");
+    fragShaderPathname = getShaderPath("shaders/cube_shader.fsh");
     if (![self compileShader:&fragShader type:GL_FRAGMENT_SHADER file:fragShaderPathname]) {
         NSLog(@"Failed to compile fragment shader");
         return NO;
@@ -80,6 +80,7 @@ NSString* getShaderPath(const char* relative_path){
     // This needs to be done prior to linking.
     glBindAttribLocation(_program, GLKVertexAttribPosition, "a_Position");
     glBindAttribLocation(_program, GLKVertexAttribNormal, "a_Normal");
+    glBindAttribLocation(_program, GLKVertexAttribColor, "a_Color");
     
     // Link program.
     if (![self linkProgram:_program]) {
