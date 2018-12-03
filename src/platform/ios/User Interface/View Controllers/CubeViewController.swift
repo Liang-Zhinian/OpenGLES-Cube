@@ -139,6 +139,8 @@ final class CubeViewController: GLKViewController {
     
     
     var modelMatrix:GLKMatrix4! // transformations of the model
+    var _modelViewProjectionMatrix:GLKMatrix4!;
+    var _normalMatrix:GLKMatrix3!;
 //    var viewMatrix:GLKMatrix4! // camera position and orientation
 //    var projectionMatrix:GLKMatrix4! // view frustum (near plane, far plane)
     var _rotMatrix:GLKMatrix4 = GLKMatrix4MakeScale(1, 1, 1)
@@ -175,11 +177,9 @@ final class CubeViewController: GLKViewController {
         setupEffect()
         setupGL()
         resize()
-        _program = build_program_from_assets("shaders/color_shader.vsh", "shaders/color_shader.fsh")
-        _program2 = build_program_from_assets("shaders/color_shader.vsh", "shaders/color_shader.fsh")
-//        drawPickedTriangle()
-        _shader = Shader()
-        _shader.loadShaders()
+//        _program = build_program_from_assets("shaders/color_shader.vsh", "shaders/color_shader.fsh")
+//        _program2 = build_program_from_assets("shaders/color_shader.vsh", "shaders/color_shader.fsh")
+        
     }
     
     /// Method to deinitialize and perform cleanup when the view controller is removed from memory.
@@ -234,8 +234,8 @@ final class CubeViewController: GLKViewController {
     
     func configureDefaultLight(){
         self.effect.light0.enabled = GLboolean(GL_TRUE)
-        self.effect.light0.position = GLKVector4Make(0, 10, 0, 1)
-//        self.effect.light0.diffuseColor = GLKVector4Make(1, 1, 1, 1.0);
+//        self.effect.light0.position = GLKVector4Make(0, 10, 0, 1)
+        self.effect.light0.diffuseColor = GLKVector4Make(1, 0.4, 0.4, 1.0);
 //        self.effect.light0.ambientColor = GLKVector4Make(1, 1, 1, 1);
 //        self.effect.light0.specularColor = GLKVector4Make(0, 0, 0, 1);
     }
@@ -270,8 +270,6 @@ final class CubeViewController: GLKViewController {
         //        let vertexBufferSize = Vertices.count * vertexSize
         glBufferData(GLenum(GL_ARRAY_BUFFER), vertexBufferSize, Vertices, GLenum(GL_DYNAMIC_DRAW))
         
-//        vbo = create_vbo(vertexBufferSize, Vertices, GLenum(GL_DYNAMIC_DRAW))
-        
         // EBO
         // Generatea a buffer for our element buffer object.
         glGenBuffers(1, &ebo)
@@ -283,6 +281,9 @@ final class CubeViewController: GLKViewController {
     }
     
     private func setupGL() {
+        
+        _shader = Shader()
+        _shader.loadShaders()
         
         let ves = genOneCubeVertices(position: GLKVector3Make(0, 0, 0), color: (1,0.5,0,1))
         let ins = genOneCubeIndices(index: 0)
@@ -332,8 +333,8 @@ final class CubeViewController: GLKViewController {
         glVertexAttribPointer(vertexAttribPosition, 3, GLenum(GL_FLOAT), GLboolean(UInt8(GL_FALSE)), GLsizei(vertexSize), nil)
         
         // Enable the colors vertex attribute to then specify information about how the color of a vertex is stored.
-//        glEnableVertexAttribArray(vertexAttribColor)
-//        glVertexAttribPointer(vertexAttribColor, 4, GLenum(GL_FLOAT), GLboolean(UInt8(GL_FALSE)), GLsizei(vertexSize), colorOffsetPointer)
+        glEnableVertexAttribArray(vertexAttribColor)
+        glVertexAttribPointer(vertexAttribColor, 4, GLenum(GL_FLOAT), GLboolean(UInt8(GL_FALSE)), GLsizei(vertexSize), colorOffsetPointer)
         
         glEnableVertexAttribArray(vertexAttribNormal)
         glVertexAttribPointer(vertexAttribNormal, 3, GLenum(GL_FLOAT), GLboolean(UInt8(GL_FALSE)), GLsizei(vertexSize), normalOffsetPointer)
@@ -342,7 +343,7 @@ final class CubeViewController: GLKViewController {
         
         // Unbind the vertex buffer and the vertex array object.
         // Bind back to the default state.
-        glBindBuffer(GLenum(GL_ARRAY_BUFFER), 0)
+//        glBindBuffer(GLenum(GL_ARRAY_BUFFER), 0)
         glBindVertexArrayOES(0)
     }
     
@@ -865,6 +866,36 @@ extension CubeViewController: GLKViewControllerDelegate {
             _quat = GLKQuaternionSlerp(_slerpStart, _slerpEnd, slerpAmt);
         }
         
+        let scaleMatrix:GLKMatrix4 = GLKMatrix4MakeScale(1.0, 1.0, 1.0);
+        var rotationMatrix:GLKMatrix4 = GLKMatrix4MakeRotation(self.rotation, 1.0, 1.0, 1.0);
+
+        if (!_autoRotate){
+            rotationMatrix = _rotMatrix;
+        }
+        
+        let aspect = fabsf(Float(view.bounds.size.width) / Float(view.bounds.size.height))
+        let projectionMatrix = GLKMatrix4MakePerspective(GLKMathDegreesToRadians(65.0), aspect, 1, 51);
+        self.effect.transform.projectionMatrix = projectionMatrix
+
+        var baseModelViewMatrix:GLKMatrix4 = GLKMatrix4MakeTranslation(0.0, 0.0, 0.0)
+        baseModelViewMatrix = GLKMatrix4Multiply(baseModelViewMatrix, rotationMatrix);
+
+        // Compute the model view matrix for the object rendered with GLKit
+        var modelViewMatrix:GLKMatrix4 = GLKMatrix4MakeTranslation(0.0, 0.0, 0.0);
+        modelViewMatrix = GLKMatrix4Multiply(modelViewMatrix, rotationMatrix);
+        modelViewMatrix = GLKMatrix4Multiply(baseModelViewMatrix, modelViewMatrix);
+
+//        self.effect.transform.modelviewMatrix = modelViewMatrix
+
+        // Compute the model view matrix for the object rendered with ES2
+        modelViewMatrix = GLKMatrix4MakeTranslation(0.0, 0.0, 0.0);
+        modelViewMatrix = GLKMatrix4Multiply(modelViewMatrix, rotationMatrix);
+        modelViewMatrix = GLKMatrix4Multiply(modelViewMatrix, scaleMatrix);
+        modelViewMatrix = GLKMatrix4Multiply(baseModelViewMatrix, modelViewMatrix);
+
+        _normalMatrix = GLKMatrix3InvertAndTranspose(GLKMatrix4GetMatrix3(modelViewMatrix), nil);
+
+        _modelViewProjectionMatrix = GLKMatrix4Multiply(projectionMatrix, modelViewMatrix);
     }
 }
 
@@ -888,49 +919,66 @@ extension CubeViewController {
         
         drawTheCube()
         
-        drawTheTriangle()
+//        drawTheTriangle()
     }
     
     func drawTheCube() {
         let scaleMatrix:GLKMatrix4 = GLKMatrix4MakeScale(1.0, 1.0, 1.0);
-        let translateMatrix:GLKMatrix4 = GLKMatrix4MakeTranslation(0, 0, 0);
         var rotationMatrix:GLKMatrix4 = GLKMatrix4MakeRotation(self.rotation, 1.0, 1.0, 1.0);
         
         if (!_autoRotate){
             rotationMatrix = _rotMatrix;
         }
         
-        var modelMatrix = GLKMatrix4Multiply(translateMatrix, rotationMatrix);
-        modelMatrix = GLKMatrix4Multiply(modelMatrix, scaleMatrix);
+        let aspect = fabsf(Float(view.bounds.size.width) / Float(view.bounds.size.height))
+        let projectionMatrix = GLKMatrix4MakePerspective(GLKMathDegreesToRadians(65.0), aspect, 1, 51);
+        self.effect.transform.projectionMatrix = projectionMatrix
         
-        self.modelMatrix = modelMatrix;
+        var baseModelViewMatrix:GLKMatrix4 = GLKMatrix4MakeTranslation(0.0, 0.0, 0.0)
+        baseModelViewMatrix = GLKMatrix4Multiply(baseModelViewMatrix, rotationMatrix);
         
-//        glBindVertexArrayOES(vao);
-//        prepareEffectWithModelMatrix(modelMatrix:self.modelMatrix, viewMatrix:self.camera.view, projectionMatrix:self.camera.projection);
-//        glDrawElements(GLenum(GL_TRIANGLES), GLsizei(Indices.count), GLenum(GL_UNSIGNED_BYTE), nil)
+        // Compute the model view matrix for the object rendered with GLKit
+        var modelViewMatrix:GLKMatrix4 = GLKMatrix4MakeTranslation(0.0, 0.0, 0.0);
+        modelViewMatrix = GLKMatrix4Multiply(modelViewMatrix, rotationMatrix);
+        modelViewMatrix = GLKMatrix4Multiply(baseModelViewMatrix, modelViewMatrix);
+        
+        self.effect.transform.modelviewMatrix = modelViewMatrix
+        
+        // Compute the model view matrix for the object rendered with ES2
+        modelViewMatrix = GLKMatrix4MakeTranslation(0.0, 0.0, 0.0);
+        modelViewMatrix = GLKMatrix4Multiply(modelViewMatrix, rotationMatrix);
+        modelViewMatrix = GLKMatrix4Multiply(modelViewMatrix, scaleMatrix);
+        modelViewMatrix = GLKMatrix4Multiply(baseModelViewMatrix, modelViewMatrix);
+        
+        _normalMatrix = GLKMatrix3InvertAndTranspose(GLKMatrix4GetMatrix3(modelViewMatrix), nil);
+        
+        _modelViewProjectionMatrix = GLKMatrix4Multiply(projectionMatrix, modelViewMatrix);
+        
+        glBindVertexArrayOES(vao);
+        prepareEffectWithModelMatrix(modelMatrix:self.modelMatrix, viewMatrix:self.camera.view, projectionMatrix:self.camera.projection);
+        glDrawElements(GLenum(GL_TRIANGLES), GLsizei(Indices.count), GLenum(GL_UNSIGNED_BYTE), nil)
         
         
         // Render the object again with ES2
         glUseProgram(_shader.program);
         
-        var _normalMatrix:GLKMatrix3 = GLKMatrix3InvertAndTranspose(GLKMatrix4GetMatrix3(modelMatrix), nil);
-        
-        var _modelViewProjectionMatrix:GLKMatrix4 = GLKMatrix4Multiply(self.camera.projection, modelMatrix);
+        // update the uniform color
+        let vertexColorLocation:GLint = glGetUniformLocation(_shader.program, "u_Color");
+        glUniform4f(vertexColorLocation, 1.0, 1.0, 0.0, 1.0);
         
         withUnsafePointer(to: &_modelViewProjectionMatrix, {
             $0.withMemoryRebound(to: Float.self, capacity: 16, {
                 glUniformMatrix4fv(_shader.uniformModelViewProjectionMatrix, 1, 0, $0)
             })
         })
-        
+
         withUnsafePointer(to: &_normalMatrix, {
             $0.withMemoryRebound(to: Float.self, capacity: 9, {
                 glUniformMatrix3fv(_shader.uniformNormalMatrix, 1, 0, $0)
             })
         })
         
-        glBindVertexArrayOES(vao);
-        glDrawElements(GLenum(GL_TRIANGLES), GLsizei(Indices.count), GLenum(GL_UNSIGNED_BYTE), nil)
+//        glDrawElements(GLenum(GL_TRIANGLES), GLsizei(Indices.count), GLenum(GL_UNSIGNED_BYTE), nil)
     }
     
     func drawTheTriangle(){

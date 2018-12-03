@@ -57,17 +57,13 @@ NSString* getShaderPath(const char* relative_path){
     
     
     // Create and compile vertex shader.
-//    vertShaderPathname = [[NSBundle mainBundle] pathForResource:@"color_shader" ofType:@"vsh"];
     vertShaderPathname = getShaderPath("shaders/color_shader.vsh");
-    
-    
     if (![self compileShader:&vertShader type:GL_VERTEX_SHADER file:vertShaderPathname]) {
         NSLog(@"Failed to compile vertex shader");
         return NO;
     }
     
     // Create and compile fragment shader.
-//    fragShaderPathname = [[NSBundle mainBundle] pathForResource:@"color_shader" ofType:@"fsh"];
     fragShaderPathname = getShaderPath("shaders/color_shader.fsh");
     if (![self compileShader:&fragShader type:GL_FRAGMENT_SHADER file:fragShaderPathname]) {
         NSLog(@"Failed to compile fragment shader");
@@ -77,14 +73,13 @@ NSString* getShaderPath(const char* relative_path){
     // Attach vertex shader to program.
     glAttachShader(_program, vertShader);
     
-    
     // Attach fragment shader to program.
     glAttachShader(_program, fragShader);
     
     // Bind attribute locations.
     // This needs to be done prior to linking.
-    glBindAttribLocation(_program, ATTRIB_VERTEX, "position");
-    
+    glBindAttribLocation(_program, GLKVertexAttribPosition, "a_Position");
+    glBindAttribLocation(_program, GLKVertexAttribNormal, "a_Normal");
     
     // Link program.
     if (![self linkProgram:_program]) {
@@ -107,8 +102,8 @@ NSString* getShaderPath(const char* relative_path){
     }
     
     // Get uniform locations.
-    _uniformModelViewProjectionMatrix = glGetUniformLocation(_program, "modelViewProjectionMatrix");
-    _uniformNormalMatrix = glGetUniformLocation(_program, "normalMatrix");
+    _uniformModelViewProjectionMatrix = glGetUniformLocation(_program, "u_MvpMatrix");
+    _uniformNormalMatrix = glGetUniformLocation(_program, "u_NormalMatrix");
     
     // Release vertex and fragment shaders.
     if (vertShader) {
