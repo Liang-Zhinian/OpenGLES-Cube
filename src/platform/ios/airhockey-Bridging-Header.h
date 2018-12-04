@@ -3,6 +3,7 @@
 //
 
 #import "Core/Shader.h"
+#import "Core/Texture.h"
 #import "buffer.h"
 #import "game.h"
 #import "program.h"

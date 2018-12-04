@@ -25,7 +25,7 @@ import GLKit
     var target :GLKVector3
     let up = GLKVector3Make(0.0, 1.0, 0.0)
     
-    init (width: CGFloat, height: CGFloat, fieldOfView: GLfloat = 60, near: GLfloat = 2, far: GLfloat = 50, beta:Float = 0, garma:Float = 0, radius:Float = 30, target:GLKVector3 = GLKVector3Make(0,0,0)){
+    init (width: CGFloat, height: CGFloat, fieldOfView: GLfloat = 65, near: GLfloat = 0.1, far: GLfloat = 100, beta:Float = 0, garma:Float = 0, radius:Float = 10, target:GLKVector3 = GLKVector3Make(0,0,0)){
         self.target = target
         self.radius = radius
         self.beta = beta
@@ -67,9 +67,9 @@ import GLKit
         
         position = GLKVector3Make(x,y,z)
         
-        //        print("beta:" + String(beta))
-        //        print("garma:" + String(garma))
-        //        print("camera position : " + String(position.x) + " " + String(position.y) + " " + String(position.z))
+        print("beta:" + String(beta))
+        print("garma:" + String(garma))
+        print("camera position : " + String(position.x) + " " + String(position.y) + " " + String(position.z))
         
         
         view = GLKMatrix4MakeLookAt(position.x, position.y, position.z, self.target.x, self.target.y, self.target.z, self.up.x, self.up.y, self.up.z)
@@ -93,7 +93,7 @@ class AbstractCamera : NSObject {
         self.height = height
         self.near = near
         self.far = far
-        self.projection = GLKMatrix4MakePerspective(GLKMathDegreesToRadians(fieldOfView), GLfloat(width/height), near, far)
+        self.projection = GLKMatrix4MakePerspective(GLKMathDegreesToRadians(fieldOfView), fabsf(GLfloat(width/height)), near, far)
         super.init()
     }
 }

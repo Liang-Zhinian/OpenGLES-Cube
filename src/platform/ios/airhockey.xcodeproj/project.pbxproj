@@ -54,10 +54,14 @@
 		8A5AE6C021B2D4A30042B047 /* Geometry.m in Sources */ = {isa = PBXBuildFile; fileRef = 8A5AE6B821B2D4A30042B047 /* Geometry.m */; };
 		8A5AE6C121B2D4A30042B047 /* Vertex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A5AE6B921B2D4A30042B047 /* Vertex.swift */; };
 		8A5AE6C221B2D4A30042B047 /* CubeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A5AE6BC21B2D4A30042B047 /* CubeViewController.swift */; };
-		8A5AE6C621B2D7990042B047 /* Buffer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A5AE6C521B2D7990042B047 /* Buffer.swift */; };
-		8A5AE6C921B2E3810042B047 /* Cube.c in Sources */ = {isa = PBXBuildFile; fileRef = 8A5AE6C721B2E3810042B047 /* Cube.c */; };
 		8A5AE6CC21B2EEEE0042B047 /* Shader.m in Sources */ = {isa = PBXBuildFile; fileRef = 8A5AE6CB21B2EEEE0042B047 /* Shader.m */; };
 		8A6094F621B4052C00181984 /* Cube.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A6094F521B4052C00181984 /* Cube.swift */; };
+		8AAEDBDE21B6198E006A8AFB /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AAEDBDD21B6198E006A8AFB /* Utils.swift */; };
+		8AAEDBE021B61A79006A8AFB /* Int+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AAEDBDF21B61A79006A8AFB /* Int+Helpers.swift */; };
+		8AAEDBE221B62C08006A8AFB /* Ray.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AAEDBE121B62C08006A8AFB /* Ray.swift */; };
+		8AAEDBE421B632B4006A8AFB /* Triangle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AAEDBE321B632B4006A8AFB /* Triangle.swift */; };
+		8AAEDBE721B671A2006A8AFB /* Texture.m in Sources */ = {isa = PBXBuildFile; fileRef = 8AAEDBE621B671A2006A8AFB /* Texture.m */; };
+		8AAEDBE921B679E9006A8AFB /* texture_numbers.png in Resources */ = {isa = PBXBuildFile; fileRef = 8AAEDBE821B679E9006A8AFB /* texture_numbers.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -132,12 +136,16 @@
 		8A5AE6B821B2D4A30042B047 /* Geometry.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Geometry.m; sourceTree = "<group>"; };
 		8A5AE6B921B2D4A30042B047 /* Vertex.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Vertex.swift; sourceTree = "<group>"; };
 		8A5AE6BC21B2D4A30042B047 /* CubeViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CubeViewController.swift; sourceTree = "<group>"; };
-		8A5AE6C521B2D7990042B047 /* Buffer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Buffer.swift; sourceTree = "<group>"; };
-		8A5AE6C721B2E3810042B047 /* Cube.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = Cube.c; sourceTree = "<group>"; };
-		8A5AE6C821B2E3810042B047 /* Cube.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Cube.h; sourceTree = "<group>"; };
 		8A5AE6CA21B2EEEE0042B047 /* Shader.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Shader.h; sourceTree = "<group>"; };
 		8A5AE6CB21B2EEEE0042B047 /* Shader.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Shader.m; sourceTree = "<group>"; };
 		8A6094F521B4052C00181984 /* Cube.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Cube.swift; sourceTree = "<group>"; };
+		8AAEDBDD21B6198E006A8AFB /* Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utils.swift; sourceTree = "<group>"; };
+		8AAEDBDF21B61A79006A8AFB /* Int+Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Int+Helpers.swift"; sourceTree = "<group>"; };
+		8AAEDBE121B62C08006A8AFB /* Ray.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Ray.swift; sourceTree = "<group>"; };
+		8AAEDBE321B632B4006A8AFB /* Triangle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Triangle.swift; sourceTree = "<group>"; };
+		8AAEDBE521B671A2006A8AFB /* Texture.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Texture.h; sourceTree = "<group>"; };
+		8AAEDBE621B671A2006A8AFB /* Texture.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Texture.m; sourceTree = "<group>"; };
+		8AAEDBE821B679E9006A8AFB /* texture_numbers.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = texture_numbers.png; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -287,6 +295,7 @@
 		0ADF1882178E2185005DA99E /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				8AAEDBE821B679E9006A8AFB /* texture_numbers.png */,
 				0ADF1883178E2185005DA99E /* airhockey-Info.plist */,
 				0ADF1884178E2185005DA99E /* InfoPlist.strings */,
 				0ADF1887178E2185005DA99E /* main.m */,
@@ -302,6 +311,7 @@
 			isa = PBXGroup;
 			children = (
 				8A5AE6B421B2D4A30042B047 /* Array+Helpers.swift */,
+				8AAEDBDF21B61A79006A8AFB /* Int+Helpers.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -337,12 +347,14 @@
 		8A5AE6C421B2D7650042B047 /* Core */ = {
 			isa = PBXGroup;
 			children = (
-				8A5AE6C521B2D7990042B047 /* Buffer.swift */,
-				8A5AE6C721B2E3810042B047 /* Cube.c */,
-				8A5AE6C821B2E3810042B047 /* Cube.h */,
 				8A5AE6CA21B2EEEE0042B047 /* Shader.h */,
 				8A5AE6CB21B2EEEE0042B047 /* Shader.m */,
 				8A6094F521B4052C00181984 /* Cube.swift */,
+				8AAEDBDD21B6198E006A8AFB /* Utils.swift */,
+				8AAEDBE121B62C08006A8AFB /* Ray.swift */,
+				8AAEDBE321B632B4006A8AFB /* Triangle.swift */,
+				8AAEDBE521B671A2006A8AFB /* Texture.h */,
+				8AAEDBE621B671A2006A8AFB /* Texture.m */,
 			);
 			path = Core;
 			sourceTree = "<group>";
@@ -405,6 +417,7 @@
 			files = (
 				0ADF1886178E2185005DA99E /* InfoPlist.strings in Resources */,
 				0ADF188E178E2185005DA99E /* Default.png in Resources */,
+				8AAEDBE921B679E9006A8AFB /* texture_numbers.png in Resources */,
 				0ADF1890178E2185005DA99E /* Default@2x.png in Resources */,
 				0ADF1892178E2185005DA99E /* Default-568h@2x.png in Resources */,
 				0ADF1895178E2185005DA99E /* MainStoryboard_iPhone.storyboard in Resources */,
@@ -420,11 +433,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8AAEDBE721B671A2006A8AFB /* Texture.m in Sources */,
 				0A8FBF91179E07600039BA29 /* buffer.c in Sources */,
 				0A8FBF92179E07600039BA29 /* game.c in Sources */,
-				8A5AE6C921B2E3810042B047 /* Cube.c in Sources */,
 				0A8FBF93179E07600039BA29 /* image.c in Sources */,
 				0A8FBF94179E07600039BA29 /* shader.c in Sources */,
+				8AAEDBDE21B6198E006A8AFB /* Utils.swift in Sources */,
 				8A5AE6CC21B2EEEE0042B047 /* Shader.m in Sources */,
 				0A8FBF95179E07600039BA29 /* texture.c in Sources */,
 				0A8FBF96179E07600039BA29 /* asset_utils.c in Sources */,
@@ -446,10 +460,12 @@
 				0A8FBF83179E07320039BA29 /* pngrtran.c in Sources */,
 				0A8FBF84179E07320039BA29 /* pngrutil.c in Sources */,
 				0A8FBF85179E07320039BA29 /* pngset.c in Sources */,
-				8A5AE6C621B2D7990042B047 /* Buffer.swift in Sources */,
+				8AAEDBE221B62C08006A8AFB /* Ray.swift in Sources */,
 				0A8FBF86179E07320039BA29 /* pngtrans.c in Sources */,
+				8AAEDBE021B61A79006A8AFB /* Int+Helpers.swift in Sources */,
 				8A5AE6BF21B2D4A30042B047 /* Camera.swift in Sources */,
 				0A8FBF87179E07320039BA29 /* pngwio.c in Sources */,
+				8AAEDBE421B632B4006A8AFB /* Triangle.swift in Sources */,
 				8A5AE6C221B2D4A30042B047 /* CubeViewController.swift in Sources */,
 				8A5AE6C121B2D4A30042B047 /* Vertex.swift in Sources */,
 				0A8FBF88179E07320039BA29 /* pngwrite.c in Sources */,
