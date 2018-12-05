@@ -12,92 +12,6 @@ import GLKit
 
 
 class Cube : DrawableElement {
-    static var POSITION_DATA_SIZE:GLint = 3;
-    static var COLOR_DATA_SIZE:GLint = 4;
-    static var NORMAL_DATA_SIZE:GLint = 3;
-    static var CUBE_VERTICES_DATA:[GLfloat] = [
-        // front
-        1, -1, 1,
-        1, 1, 1,
-        -1, 1, 1,
-        -1, -1, 1,
-        // back
-        1, 1, -1,
-        1, -1, -1,
-        -1, -1, -1,
-        -1, 1, -1,
-        // left
-        -1, -1, 1,
-        -1, 1, 1,
-        -1, 1, -1,
-        -1, -1, -1,
-        // right
-        1, -1, -1,
-        1, 1, -1,
-        1, 1, 1,
-        1, -1, 1,
-        // top
-        1, 1, 1,
-        1, 1, -1,
-        -1, 1, -1,
-        -1, 1, 1,
-        // bottom
-        1, -1, -1,
-        1, -1, 1,
-        -1, -1, 1,
-        -1, -1, -1,
-        
-    ]
-    static var CUBE_COLOR_DATA:[GLfloat] = [
-        // R, G, B, A
-        // Front face (red)
-        1.0, 0.0, 0.0, 1.0,
-        1.0, 0.0, 0.0, 1.0,
-        1.0, 0.0, 0.0, 1.0,
-        1.0, 0.0, 0.0, 1.0,
-        1.0, 0.0, 0.0, 1.0,
-        1.0, 0.0, 0.0, 1.0,
-        
-        // Right face (green)
-        0.0, 1.0, 0.0, 1.0,
-        0.0, 1.0, 0.0, 1.0,
-        0.0, 1.0, 0.0, 1.0,
-        0.0, 1.0, 0.0, 1.0,
-        0.0, 1.0, 0.0, 1.0,
-        0.0, 1.0, 0.0, 1.0,
-        
-        // Back face (blue)
-        0.0, 0.0, 1.0, 1.0,
-        0.0, 0.0, 1.0, 1.0,
-        0.0, 0.0, 1.0, 1.0,
-        0.0, 0.0, 1.0, 1.0,
-        0.0, 0.0, 1.0, 1.0,
-        0.0, 0.0, 1.0, 1.0,
-        
-        // Left face (yellow)
-        1.0, 1.0, 0.0, 1.0,
-        1.0, 1.0, 0.0, 1.0,
-        1.0, 1.0, 0.0, 1.0,
-        1.0, 1.0, 0.0, 1.0,
-        1.0, 1.0, 0.0, 1.0,
-        1.0, 1.0, 0.0, 1.0,
-        
-        // Top face (cyan)
-        0.0, 1.0, 1.0, 1.0,
-        0.0, 1.0, 1.0, 1.0,
-        0.0, 1.0, 1.0, 1.0,
-        0.0, 1.0, 1.0, 1.0,
-        0.0, 1.0, 1.0, 1.0,
-        0.0, 1.0, 1.0, 1.0,
-        
-        // Bottom face (magenta)
-        1.0, 0.0, 1.0, 1.0,
-        1.0, 0.0, 1.0, 1.0,
-        1.0, 0.0, 1.0, 1.0,
-        1.0, 0.0, 1.0, 1.0,
-        1.0, 0.0, 1.0, 1.0,
-        1.0, 0.0, 1.0, 1.0
-    ];
     
     /// Element buffer object. Stores the indices that tell OpenGL what vertices to draw.
     var ebo = GLuint()
@@ -110,78 +24,42 @@ class Cube : DrawableElement {
     /// to draw elements on screen, and then whenever you want to draw you simply bind your VAO and it stores those other
     /// vertex attribute calls.
     var vao = GLuint()
+    var textureObjectId = GLuint()
+    var textureVBO = GLuint()
     
-    var Vertices:[Vertex] = [
-        // Front
-        Vertex(Position: (1, -1, 1),    Color: (1, 0, 0, 1), TexCoord: (x:0, y:1),          Normal:NORMAL["Z"]! ), //0//
-        Vertex(Position: (1, 1, 1),     Color: (0, 1, 0, 1), TexCoord: (0, 2.0/3.0),        Normal:NORMAL["Z"]! ), //1//
-        Vertex(Position: (-1, 1, 1),    Color: (0, 0, 1, 1), TexCoord: (1.0/3.0, 2.0/3.0),  Normal:NORMAL["Z"]! ), //2//
-        Vertex(Position: (-1, -1, 1),   Color: (0, 0, 0, 1), TexCoord: (1.0/3.0, 1),        Normal:NORMAL["Z"]! ), //3//
-        // Back
-        Vertex(Position: (1, 1, -1),    Color: (1, 0, 0, 1), TexCoord: (1.0/3.0, 1),        Normal:NORMAL["-Z"]! ), //4//
-        Vertex(Position: (1, -1, -1),   Color: (0, 0, 1, 1), TexCoord: (1.0/3.0, 2.0/3.0),  Normal:NORMAL["-Z"]! ), ///
-        Vertex(Position: (-1, -1, -1),  Color: (0, 1, 0, 1), TexCoord: (2.0/3.0, 2.0/3.0),  Normal:NORMAL["-Z"]! ), ///
-        Vertex(Position: (-1, 1, -1),   Color: (0, 0, 0, 1), TexCoord: (2.0/3.0, 1),        Normal:NORMAL["-Z"]! ), //7//
-        // Left
-        Vertex(Position: (-1, -1, 1),   Color: (1, 0, 0, 1), TexCoord: (2.0/3.0, 1),        Normal:NORMAL["-X"]! ), //8//
-        Vertex(Position: (-1, 1, 1),    Color: (0, 1, 0, 1), TexCoord: (2.0/3.0, 2.0/3.0),  Normal:NORMAL["-X"]! ), ///
-        Vertex(Position: (-1, 1, -1),   Color: (0, 0, 1, 1), TexCoord: (1, 2.0/3.0),        Normal:NORMAL["-X"]! ), //10//
-        Vertex(Position: (-1, -1, -1),  Color: (0, 0, 0, 1), TexCoord: (1, 1),              Normal:NORMAL["-X"]! ), //11//
-        // Right
-        Vertex(Position: (1, -1, -1),   Color: (1, 0, 0, 1), TexCoord: (0, 2.0/3.0),        Normal:NORMAL["X"]! ), // 12//
-        Vertex(Position: (1, 1, -1),    Color: (0, 1, 0, 1), TexCoord: (0, 1.0/3.0),        Normal:NORMAL["X"]! ), //13//
-        Vertex(Position: (1, 1, 1),     Color: (0, 0, 1, 1), TexCoord: (1.0/3.0, 1.0/3.0),  Normal:NORMAL["X"]! ), ///
-        Vertex(Position: (1, -1, 1),    Color: (0, 0, 0, 1), TexCoord: (1.0/3.0, 2.0/3.0),  Normal:NORMAL["X"]! ), ///
-        // Top
-        Vertex(Position: (1, 1, 1),     Color: (1, 0, 0, 1), TexCoord: (1.0/3.0, 2.0/3.0),  Normal:NORMAL["Y"]!), //16//
-        Vertex(Position: (1, 1, -1),    Color: (0, 1, 0, 1), TexCoord: (1.0/3.0, 1.0/3.0),  Normal:NORMAL["Y"]! ), ///
-        Vertex(Position: (-1, 1, -1),   Color: (0, 0, 1, 1), TexCoord: (2.0/3.0, 1.0/3.0),  Normal:NORMAL["Y"]! ), ////
-        Vertex(Position: (-1, 1, 1),    Color: (0, 0, 0, 1), TexCoord: (2.0/3.0, 2.0/3.0),  Normal:NORMAL["Y"]! ), ///
-        // Bottom
-        Vertex(Position: (1, -1, -1),   Color: (1, 0, 0, 1), TexCoord: (2.0/3.0, 2.0/3.0),  Normal:NORMAL["-Y"]! ), ///
-        Vertex(Position: (1, -1, 1),    Color: (0, 1, 0, 1), TexCoord: (2.0/3.0, 1.0/3.0),  Normal:NORMAL["-Y"]! ), ///
-        Vertex(Position: (-1, -1, 1),   Color: (0, 0, 1, 1), TexCoord: (1, 1.0/3.0),        Normal:NORMAL["-Y"]! ), //22//
-        Vertex(Position: (-1, -1, -1),  Color: (0, 0, 0, 1), TexCoord: (1, 2.0/3.0),        Normal:NORMAL["-Y"]! ) //23//
-    ]
+    var _textureMatrix:GLKMatrix4!
     
-    var Indices:[GLubyte] = [
-        // Front
-        0, 1, 2,
-        2, 3, 0,
-        // Back
-        4, 6, 5,
-        4, 6, 7,
-        // Left
-        8, 9, 10,
-        10, 11, 8,
-        // Right
-        12, 13, 14,
-        14, 15, 12,
-        // Top
-        16, 17, 18,
-        18, 19, 16,
-        // Bottom
-        20, 21, 22,
-        22, 23, 20
-    ]
+    var Vertices:[Vertex]=[]
+    var Indices:[GLubyte]=[]
+    var verticesBuffer:[GLfloat] = []
+    var colorBuffer:[GLfloat] = []
+    var normalBuffer:[GLfloat] = []
+    var textureBuffer:[GLfloat] = []
     
     public var texture:Texture!
     
     override init() {
         super.init();
         
-//        let ves = VertexGenerator.genOneCubeVertices(position: GLKVector3Make(0, 0, 0), color: (1,0.5,0,1))
-//        let ins = VertexGenerator.genOneCubeIndices(index: 0)
-//        Vertices = []
-//        Indices = []
-//        Vertices.append(contentsOf: ves)
-//        Indices.append(contentsOf: ins)
+        let ves = VertexGenerator.genOneCubeVertices(position: GLKVector3Make(0, 0, 0), color: (1,0.5,0,1))
+        let ins = VertexGenerator.genOneCubeIndices(index: 0)
+        Vertices = []
+        Indices = []
+        Vertices.append(contentsOf: ves)
+        Indices.append(contentsOf: ins)
         
+        for i in (0 ..< Vertices.count) {
+            let vertex = Vertices[i]
+            verticesBuffer.append(contentsOf: [vertex.Position.x, vertex.Position.y, vertex.Position.z])
+            colorBuffer.append(contentsOf: [vertex.Color.r, vertex.Color.g, vertex.Color.b, vertex.Color.a])
+            textureBuffer.append(contentsOf: [vertex.TexCoord.x, vertex.TexCoord.y])
+            normalBuffer.append(contentsOf: [vertex.Normal.x, vertex.Normal.y, vertex.Normal.z])
+        }
     }
     
     func createVertexBuffers() {
         // Generate and bind a vertex array object.
-//        vao = Utils.createVAO()
+        //        vao = Utils.createVAO()
         
         // The size, in memory, of a Vertex structure.
         let vertexSize = MemoryLayout<Vertex>.stride
@@ -194,27 +72,30 @@ class Cube : DrawableElement {
         let indexBufferSize = Indices.size()
         ebo = Utils.createEBO(indexBufferSize, &Indices, GLenum(GL_DYNAMIC_DRAW));
         
+//        textureVBO = Utils.createEBO(textureBuffer.size(), &textureBuffer, GLenum(GL_DYNAMIC_DRAW));
+        
         /*
-        // Enable the position vertex attribute to then specify information about how the position of a vertex is stored.
-        let vertexAttribPosition = GLuint(GLKVertexAttrib.position.rawValue)
-        glEnableVertexAttribArray(vertexAttribPosition)
-        glVertexAttribPointer(vertexAttribPosition, 3, GLenum(GL_FLOAT), GLboolean(UInt8(GL_FALSE)), GLsizei(vertexSize), nil)
- 
-        // Enable the colors vertex attribute to then specify information about how the color of a vertex is stored.
-        let vertexAttribColor = GLuint(GLKVertexAttrib.color.rawValue)
-        // The byte offset, in memory, of our color information within a Vertex object.
-        let colorOffset = MemoryLayout<GLfloat>.stride * 3
-        // Swift pointer object that stores the offset of the color information within our Vertex structure.
-        let colorOffsetPointer = UnsafeRawPointer(bitPattern: colorOffset)
-        glEnableVertexAttribArray(vertexAttribColor)
-        glVertexAttribPointer(vertexAttribColor, 4, GLenum(GL_FLOAT), GLboolean(UInt8(GL_FALSE)), GLsizei(vertexSize), colorOffsetPointer)
-        */
+         // Enable the position vertex attribute to then specify information about how the position of a vertex is stored.
+         let vertexAttribPosition = GLuint(GLKVertexAttrib.position.rawValue)
+         glEnableVertexAttribArray(vertexAttribPosition)
+         glVertexAttribPointer(vertexAttribPosition, 3, GLenum(GL_FLOAT), GLboolean(UInt8(GL_FALSE)), GLsizei(vertexSize), nil)
+         
+         // Enable the colors vertex attribute to then specify information about how the color of a vertex is stored.
+         let vertexAttribColor = GLuint(GLKVertexAttrib.color.rawValue)
+         // The byte offset, in memory, of our color information within a Vertex object.
+         let colorOffset = MemoryLayout<GLfloat>.stride * 3
+         // Swift pointer object that stores the offset of the color information within our Vertex structure.
+         let colorOffsetPointer = UnsafeRawPointer(bitPattern: colorOffset)
+         glEnableVertexAttribArray(vertexAttribColor)
+         glVertexAttribPointer(vertexAttribColor, 4, GLenum(GL_FLOAT), GLboolean(UInt8(GL_FALSE)), GLsizei(vertexSize), colorOffsetPointer)
         
         let vertexAttribNormal = GLuint(GLKVertexAttrib.normal.rawValue)
         let normalOffset = MemoryLayout<GLfloat>.stride * 9
         let normalOffsetPointer = UnsafePointer<Int>(bitPattern: normalOffset)
         glEnableVertexAttribArray(vertexAttribNormal)
         glVertexAttribPointer(vertexAttribNormal, 3, GLenum(GL_FLOAT), GLboolean(UInt8(GL_FALSE)), GLsizei(vertexSize), normalOffsetPointer)
+         */
+        
         
         //Textures
         let vertexAttribTexCoord0 = GLuint(GLKVertexAttrib.texCoord0.rawValue)
@@ -231,9 +112,10 @@ class Cube : DrawableElement {
     }
     
     func configureDefaultTexture() {
-        texture = Texture(pathForResource: "texture_numbers", ofType: "png")
+        texture = Texture(pathForResource: "/assets/textures/texture_numbers", ofType: "png")
+        textureObjectId = load_png_asset_into_texture("textures/texture_numbers.png")
     }
-
+    
     
     override func draw() {
         // The size, in memory, of a Vertex structure.
@@ -248,30 +130,17 @@ class Cube : DrawableElement {
         
         // update the attribute color
         let vertexColorLocation:GLuint = GLuint(shader.getAttribute("a_Color"));
-        // The byte offset, in memory, of our color information within a Vertex object.
-        let colorOffset = MemoryLayout<GLfloat>.stride * 3
-        // Swift pointer object that stores the offset of the color information within our Vertex structure.
-        let colorOffsetPointer = UnsafeRawPointer(bitPattern: colorOffset)
+        glEnableVertexAttribArray(vertexColorLocation);
         // Pass in the color info
         glVertexAttribPointer(
             vertexColorLocation,
-            Cube.COLOR_DATA_SIZE,
+            4,
             GLenum(GL_FLOAT),
             GLboolean(GL_FALSE),
             0,
-            Cube.CUBE_COLOR_DATA
+            colorBuffer
         );
-//        glEnableVertexAttribArray(vertexColorLocation);
-        
-        /*
-        var lightPos:GLKVector3 = GLKVector3Make(1, 1, -1)
-        withUnsafePointer(to: &lightPos, {
-            $0.withMemoryRebound(to: Float.self, capacity: 16, {
-                glUniform3fv(shader.getUniform("u_LightPos"), 1, $0)
-            })
-        })
-        */
-        
+ 
         withUnsafePointer(to: &_projectionMatrix, {
             $0.withMemoryRebound(to: Float.self, capacity: 16, {
                 glUniformMatrix4fv(shader.getUniform("u_ProjectionMatrix"), 1, 0, $0)
@@ -290,27 +159,59 @@ class Cube : DrawableElement {
                               GLenum(GL_FLOAT),
                               GLboolean(UInt8(GL_FALSE)),
                               0,
-                              Cube.CUBE_VERTICES_DATA)
+                              verticesBuffer)
         
-        /*
-        let vertexAttribNormal = GLuint(shader.getAttribute("a_Normal"))
-        let normalOffset = MemoryLayout<GLfloat>.stride * 9
-        let normalOffsetPointer = UnsafePointer<Int>(bitPattern: normalOffset)
-        glEnableVertexAttribArray(vertexAttribNormal)
-        glVertexAttribPointer(vertexAttribNormal, 3, GLenum(GL_FLOAT), GLboolean(UInt8(GL_FALSE)), GLsizei(vertexSize), normalOffsetPointer)
-        */
+         let vertexAttribNormal = GLuint(shader.getAttribute("a_Normal"))
+         glEnableVertexAttribArray(vertexAttribNormal)
+         glVertexAttribPointer(vertexAttribNormal,
+                               3,
+                               GLenum(GL_FLOAT),
+                               GLboolean(UInt8(GL_FALSE)),
+                               0,
+                               normalBuffer)
+        
+
+        var lightPos:GLKVector3 = GLKVector3Make(-20, 10, -10)
+        withUnsafePointer(to: &lightPos, {
+            $0.withMemoryRebound(to: Float.self, capacity: 16, {
+                glUniform3fv(shader.getUniform("u_LightPos"), 1, $0)
+            })
+        })
+        
+        
+        glActiveTexture(GLenum(GL_TEXTURE0));
+        glBindTexture(GLenum(GL_TEXTURE_2D), textureObjectId);
+        
+        glUniform1i(shader.getUniform("u_Texture"), 0)
+        let vertexAttribTextureCoord = GLuint(shader.getAttribute("a_TextureCoord"))
+        glEnableVertexAttribArray(vertexAttribTextureCoord)
+        glVertexAttribPointer(vertexAttribTextureCoord,
+                              2,
+                              GLenum(GL_FLOAT),
+                              GLboolean(UInt8(GL_FALSE)),
+                              0,
+                              textureBuffer)
+//        withUnsafePointer(to: &textureBuffer, {
+//            $0.withMemoryRebound(to: Float.self, capacity: 16, {
+//                glUniformMatrix4fv(shader.getUniform("u_Texture"), 1, 0, $0)
+//            })
+//        })
+        glBindBuffer(GLenum(GL_ARRAY_BUFFER), textureVBO);
+ 
         
         glBindBuffer(GLenum(GL_ARRAY_BUFFER), vbo)
         
         glDrawElements(GLenum(GL_TRIANGLES), GLsizei(Indices.count), GLenum(GL_UNSIGNED_BYTE), nil)
         // Draw the cube.
-//        glDrawArrays(GLenum(GL_TRIANGLES), 0, GLsizei(Indices.count));
+        //        glDrawArrays(GLenum(GL_TRIANGLES), 0, GLsizei(Indices.count));
         
         glBindBuffer(GLenum(GL_ARRAY_BUFFER), 0);
         glBindVertexArrayOES(0)
         
-//        glDisableVertexAttribArray(GLuint(shader.getAttribute("a_Color")));
-//        glDisableVertexAttribArray([shader getAttribute:@"TextureCoord"]);
+        glDisableVertexAttribArray(vertexAttribPosition);
+        glDisableVertexAttribArray(vertexColorLocation);
+        glDisableVertexAttribArray(vertexAttribNormal);
+        glDisableVertexAttribArray(vertexAttribTextureCoord);
         glBindTexture(GLenum(GL_TEXTURE_2D), 0);
         glDisable(GLenum(GL_BLEND));
     }

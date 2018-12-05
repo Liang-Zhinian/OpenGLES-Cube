@@ -6,9 +6,6 @@ import GLKit
 import Foundation
 
 
-func F3(x:Float, _ y:Float, _ z:Float) -> (x:Float, y:Float, z:Float){
-    return (x:x, y:y, z:z)
-}
 
 func sizeofVertex() -> Int {
     // The size, in memory, of a Vertex structure.
@@ -164,10 +161,6 @@ final class CubeViewController: GLKViewController {
     }
     
     private func setupGL() {
-        
-//        _shader = Shader()
-//        _shader.loadShaders()
-        
         // init GL stuff here
         glClearColor(0.0, 0.0, 0.0, 1.0);
         glEnable(GLenum(GL_DEPTH_TEST));

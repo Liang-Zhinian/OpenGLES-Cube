@@ -68,11 +68,12 @@ ShaderManager* shaderManagerSingleton = nil;
         if ([name isEqualToString:@"/assets/shaders/cube_shader"]){
             [_simpleShader addUniform:        @"u_ProjectionMatrix"];
             [_simpleShader addUniform:        @"u_MvMatrix"];
-//            [_simpleShader addUniform:        @"u_LightPos"];
+            [_simpleShader addUniform:        @"u_LightPos"];
+            [_simpleShader addUniform:        @"u_Texture"];
             [_simpleShader addAttribute:    @"a_Position"];
             [_simpleShader addAttribute:    @"a_Color"];
-//            [_simpleShader addAttribute:    @"a_Normal"];
-//            [_simpleShader addAttribute:    @"a_TextureCoord"];
+            [_simpleShader addAttribute:    @"a_Normal"];
+            [_simpleShader addAttribute:    @"a_TextureCoord"];
         }
         [_simpleShader loadShaders:name];
         [shaderCache setObject:_simpleShader forKey:name];

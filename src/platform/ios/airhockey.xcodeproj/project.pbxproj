@@ -63,7 +63,7 @@
 		8AAEDBE221B62C08006A8AFB /* Ray.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AAEDBE121B62C08006A8AFB /* Ray.swift */; };
 		8AAEDBE421B632B4006A8AFB /* Triangle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AAEDBE321B632B4006A8AFB /* Triangle.swift */; };
 		8AAEDBE721B671A2006A8AFB /* Texture.m in Sources */ = {isa = PBXBuildFile; fileRef = 8AAEDBE621B671A2006A8AFB /* Texture.m */; };
-		8AAEDBE921B679E9006A8AFB /* texture_numbers.png in Resources */ = {isa = PBXBuildFile; fileRef = 8AAEDBE821B679E9006A8AFB /* texture_numbers.png */; };
+		8AD1F02E21B7FF6400506882 /* CubeModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AD1F02D21B7FF6400506882 /* CubeModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -151,7 +151,7 @@
 		8AAEDBE321B632B4006A8AFB /* Triangle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Triangle.swift; sourceTree = "<group>"; };
 		8AAEDBE521B671A2006A8AFB /* Texture.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Texture.h; sourceTree = "<group>"; };
 		8AAEDBE621B671A2006A8AFB /* Texture.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Texture.m; sourceTree = "<group>"; };
-		8AAEDBE821B679E9006A8AFB /* texture_numbers.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = texture_numbers.png; sourceTree = "<group>"; };
+		8AD1F02D21B7FF6400506882 /* CubeModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CubeModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -301,7 +301,6 @@
 		0ADF1882178E2185005DA99E /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
-				8AAEDBE821B679E9006A8AFB /* texture_numbers.png */,
 				0ADF1883178E2185005DA99E /* airhockey-Info.plist */,
 				0ADF1884178E2185005DA99E /* InfoPlist.strings */,
 				0ADF1887178E2185005DA99E /* main.m */,
@@ -328,6 +327,7 @@
 				8A5AE6B721B2D4A30042B047 /* Geometry.h */,
 				8A5AE6B821B2D4A30042B047 /* Geometry.m */,
 				8A5AE6B921B2D4A30042B047 /* Vertex.swift */,
+				8AD1F02D21B7FF6400506882 /* CubeModel.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -427,7 +427,6 @@
 			files = (
 				0ADF1886178E2185005DA99E /* InfoPlist.strings in Resources */,
 				0ADF188E178E2185005DA99E /* Default.png in Resources */,
-				8AAEDBE921B679E9006A8AFB /* texture_numbers.png in Resources */,
 				0ADF1890178E2185005DA99E /* Default@2x.png in Resources */,
 				0ADF1892178E2185005DA99E /* Default-568h@2x.png in Resources */,
 				0ADF1895178E2185005DA99E /* MainStoryboard_iPhone.storyboard in Resources */,
@@ -453,6 +452,7 @@
 				0A8FBF95179E07600039BA29 /* texture.c in Sources */,
 				0A8FBF96179E07600039BA29 /* asset_utils.c in Sources */,
 				0A8FBF8D179E07440039BA29 /* platform_asset_utils.m in Sources */,
+				8AD1F02E21B7FF6400506882 /* CubeModel.swift in Sources */,
 				0A8FBF8E179E07440039BA29 /* AppDelegate.m in Sources */,
 				0A8FBF8F179E07440039BA29 /* AirHockeyViewController.m in Sources */,
 				0A8FBF90179E07440039BA29 /* main.m in Sources */,

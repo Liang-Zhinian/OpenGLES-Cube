@@ -32,6 +32,10 @@ import GLKit
 // MARK: - Vertex
 //
 
+func F3(x:Float, _ y:Float, _ z:Float) -> (x:Float, y:Float, z:Float){
+    return (x:x, y:y, z:z)
+}
+
 struct Vertex {
     var Position:   (x:Float, y:Float, z:Float)
     var Color:      (r:Float, g:Float, b:Float, a:Float)
