@@ -134,7 +134,7 @@ final class CubeViewController: GLKViewController {
     }
     
     func setupEffect() {
-        self.effect.texture2d0.enabled = GLboolean(GL_TRUE)
+//        self.effect.texture2d0.enabled = GLboolean(GL_TRUE)
         configureDefaultLight()
 //        configureDefaultMaterial()
     }
@@ -163,6 +163,7 @@ final class CubeViewController: GLKViewController {
     private func setupGL() {
         // init GL stuff here
         glClearColor(0.0, 0.0, 0.0, 1.0);
+//        glEnable(GLenum(GL_CULL_FACE));
         glEnable(GLenum(GL_DEPTH_TEST));
         glDepthFunc(GLenum(GL_LEQUAL));
         // Enable Transparency
@@ -174,7 +175,7 @@ final class CubeViewController: GLKViewController {
         
         _triangle = Triangle();
         
-        effect.texture2d0.name = _cube.texture.effectPropertyTexture.name;
+//        effect.texture2d0.name = _cube.texture.effectPropertyTexture.name;
     }
     
     func addGestureRecognizer() {
@@ -187,7 +188,7 @@ final class CubeViewController: GLKViewController {
         
         self.camera = SphereCamera(width: view.bounds.width,
                                    height: view.bounds.height)
-        self.effect.transform.projectionMatrix = self.camera.projection
+//        self.effect.transform.projectionMatrix = self.camera.projection
     }
     
     
@@ -381,7 +382,7 @@ extension CubeViewController: GLKViewControllerDelegate {
         
         let aspect = fabsf(Float(view.bounds.size.width) / Float(view.bounds.size.height))
         let projectionMatrix = GLKMatrix4MakePerspective(GLKMathDegreesToRadians(65.0), aspect, 0.1, 100.0);
-        self.effect.transform.projectionMatrix = projectionMatrix
+//        self.effect.transform.projectionMatrix = projectionMatrix
         _projectionMatrix = projectionMatrix
         
         if (_slerping) {
@@ -404,7 +405,7 @@ extension CubeViewController: GLKViewControllerDelegate {
         modelViewMatrix = GLKMatrix4Multiply(modelViewMatrix, rotationMatrix);
         modelViewMatrix = GLKMatrix4Multiply(modelViewMatrix, scaleMatrix);
 
-        self.effect.transform.modelviewMatrix = modelViewMatrix
+//        self.effect.transform.modelviewMatrix = modelViewMatrix
         _modelViewMatrix = modelViewMatrix
 
         // Compute the model view matrix for the object rendered with ES2

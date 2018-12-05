@@ -55,6 +55,55 @@ class Cube : DrawableElement {
             textureBuffer.append(contentsOf: [vertex.TexCoord.x, vertex.TexCoord.y])
             normalBuffer.append(contentsOf: [vertex.Normal.x, vertex.Normal.y, vertex.Normal.z])
         }
+        textureBuffer = [
+            // Front face
+            0.0, 0.0,
+            0.0, 1.0,
+            1.0, 0.0,
+            0.0, 1.0,
+            1.0, 1.0,
+            1.0, 0.0,
+            
+            // Right face
+            0.0, 0.0,
+            0.0, 1.0,
+            1.0, 0.0,
+            0.0, 1.0,
+            1.0, 1.0,
+            1.0, 0.0,
+            
+            // Back face
+            0.0, 0.0,
+            0.0, 1.0,
+            1.0, 0.0,
+            0.0, 1.0,
+            1.0, 1.0,
+            1.0, 0.0,
+            
+            // Left face
+            0.0, 0.0,
+            0.0, 1.0,
+            1.0, 0.0,
+            0.0, 1.0,
+            1.0, 1.0,
+            1.0, 0.0,
+            
+            // Top face
+            0.0, 0.0,
+            0.0, 1.0,
+            1.0, 0.0,
+            0.0, 1.0,
+            1.0, 1.0,
+            1.0, 0.0,
+            
+            // Bottom face
+            0.0, 0.0,
+            0.0, 1.0,
+            1.0, 0.0,
+            0.0, 1.0,
+            1.0, 1.0,
+            1.0, 0.0
+        ];
     }
     
     func createVertexBuffers() {
@@ -72,7 +121,7 @@ class Cube : DrawableElement {
         let indexBufferSize = Indices.size()
         ebo = Utils.createEBO(indexBufferSize, &Indices, GLenum(GL_DYNAMIC_DRAW));
         
-//        textureVBO = Utils.createEBO(textureBuffer.size(), &textureBuffer, GLenum(GL_DYNAMIC_DRAW));
+//        textureVBO = Utils.createVBO(textureBuffer.size(), &textureBuffer, GLenum(GL_DYNAMIC_DRAW));
         
         /*
          // Enable the position vertex attribute to then specify information about how the position of a vertex is stored.
@@ -112,7 +161,7 @@ class Cube : DrawableElement {
     }
     
     func configureDefaultTexture() {
-        texture = Texture(pathForResource: "/assets/textures/texture_numbers", ofType: "png")
+//        texture = Texture(pathForResource: "/assets/textures/texture_numbers", ofType: "png")
         textureObjectId = load_png_asset_into_texture("textures/texture_numbers.png")
     }
     
@@ -179,31 +228,39 @@ class Cube : DrawableElement {
         })
         
         
+        // Set the active texture unit to texture unit 0.
         glActiveTexture(GLenum(GL_TEXTURE0));
-        glBindTexture(GLenum(GL_TEXTURE_2D), textureObjectId);
+        // Bind the texture to this unit.
+//        glBindTexture(GLenum(GL_TEXTURE_2D), textureObjectId);
+        // Tell the texture uniform sampler to use this texture in the shader by binding to texture unit 0.
+//        glUniform1i(shader.getUniform("u_Texture"), 0)
         
-        glUniform1i(shader.getUniform("u_Texture"), 0)
-        let vertexAttribTextureCoord = GLuint(shader.getAttribute("a_TextureCoord"))
-        glEnableVertexAttribArray(vertexAttribTextureCoord)
-        glVertexAttribPointer(vertexAttribTextureCoord,
-                              2,
-                              GLenum(GL_FLOAT),
-                              GLboolean(UInt8(GL_FALSE)),
-                              0,
-                              textureBuffer)
+        // Pass in the texture coordinate information
+//        let vertexAttribTexCoord = GLuint(shader.getAttribute("a_TextureCoord"))
+//        glVertexAttribPointer(vertexAttribTexCoord,
+//                              2,
+//                              GLenum(GL_FLOAT),
+//                              GLboolean(UInt8(GL_FALSE)),
+//                              0,
+//                              textureBuffer)
+//        let vertexAttribTexCoord = GLuint(GLKVertexAttrib.texCoord0.rawValue)
+//        let textureOffset = MemoryLayout<GLfloat>.stride * 7
+//        let textureOffsetPointer = UnsafePointer<Int>(bitPattern: textureOffset)
+//        glVertexAttribPointer(vertexAttribTexCoord, 2, GLenum(GL_FLOAT), GLboolean(UInt8(GL_FALSE)), GLsizei(vertexSize), textureOffsetPointer);
+//        glEnableVertexAttribArray(vertexAttribTexCoord)
 //        withUnsafePointer(to: &textureBuffer, {
 //            $0.withMemoryRebound(to: Float.self, capacity: 16, {
 //                glUniformMatrix4fv(shader.getUniform("u_Texture"), 1, 0, $0)
 //            })
 //        })
-        glBindBuffer(GLenum(GL_ARRAY_BUFFER), textureVBO);
+//        glBindBuffer(GLenum(GL_ARRAY_BUFFER), textureVBO);
  
         
         glBindBuffer(GLenum(GL_ARRAY_BUFFER), vbo)
         
-        glDrawElements(GLenum(GL_TRIANGLES), GLsizei(Indices.count), GLenum(GL_UNSIGNED_BYTE), nil)
+//        glDrawElements(GLenum(GL_TRIANGLES), GLsizei(Indices.count), GLenum(GL_UNSIGNED_BYTE), nil)
         // Draw the cube.
-        //        glDrawArrays(GLenum(GL_TRIANGLES), 0, GLsizei(Indices.count));
+        glDrawArrays(GLenum(GL_TRIANGLE_FAN), 0, GLsizei(Indices.count));
         
         glBindBuffer(GLenum(GL_ARRAY_BUFFER), 0);
         glBindVertexArrayOES(0)
@@ -211,7 +268,7 @@ class Cube : DrawableElement {
         glDisableVertexAttribArray(vertexAttribPosition);
         glDisableVertexAttribArray(vertexColorLocation);
         glDisableVertexAttribArray(vertexAttribNormal);
-        glDisableVertexAttribArray(vertexAttribTextureCoord);
+//        glDisableVertexAttribArray(vertexAttribTexCoord);
         glBindTexture(GLenum(GL_TEXTURE_2D), 0);
         glDisable(GLenum(GL_BLEND));
     }
