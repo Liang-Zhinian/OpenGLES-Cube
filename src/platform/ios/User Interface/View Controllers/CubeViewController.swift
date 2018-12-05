@@ -22,13 +22,6 @@ func sizeofVertex() -> Int {
 
 /// Our subclass of GLKViewController to perform drawing, and logic updates using OpenGL ES.
 final class CubeViewController: GLKViewController {
-    
-    /// Vertices array that stores 4 Vertex objects used to draw and color a square on screen.
-    //    var Vertices:[Vertex] = VerticesCube
-    
-    /// Array used to store the indices in the order we want to draw the triangles of our square.
-    //  var Indices:[GLuint] = IndicesTrianglesCube
-    
     //
     // MARK: - Variables And Properties
     //
@@ -51,12 +44,12 @@ final class CubeViewController: GLKViewController {
     var camera:SphereCamera!
     var PI = Float(M_PI)
     
-    
-    var modelMatrix:GLKMatrix4! // transformations of the model
+    // OpenGL Matricies
+    var _modelViewMatrix:GLKMatrix4!
+    var _projectionMatrix:GLKMatrix4!
     var _modelViewProjectionMatrix:GLKMatrix4!;
     var _normalMatrix:GLKMatrix3!;
-//    var viewMatrix:GLKMatrix4! // camera position and orientation
-//    var projectionMatrix:GLKMatrix4! // view frustum (near plane, far plane)
+    
     var _rotMatrix:GLKMatrix4 = GLKMatrix4MakeScale(1, 1, 1)
     var _quatStart:GLKQuaternion = GLKQuaternionMake(0, 0, 0, 1)
     var _quat:GLKQuaternion = GLKQuaternionMake(0, 0, 0, 1)
@@ -70,8 +63,6 @@ final class CubeViewController: GLKViewController {
     var _slerpStart:GLKQuaternion = GLKQuaternionMake(0, 0, 0, 1)
     var _slerpEnd:GLKQuaternion = GLKQuaternionMake(0, 0, 0, 1)
     var _autoRotate:Bool = false
-    var _program:GLuint = 0
-    var _program2:GLuint = 0
     var _shader:Shader!
     var _cube:Cube!
     var _triangle:Triangle!
@@ -146,7 +137,7 @@ final class CubeViewController: GLKViewController {
     }
     
     func setupEffect() {
-        self.effect.colorMaterialEnabled = GLboolean(GL_TRUE)
+        self.effect.texture2d0.enabled = GLboolean(GL_TRUE)
         configureDefaultLight()
 //        configureDefaultMaterial()
     }
@@ -161,7 +152,8 @@ final class CubeViewController: GLKViewController {
     
     func configureDefaultMaterial() {
         
-        self.effect.texture2d0.enabled = GLboolean(GL_TRUE);
+        self.effect.colorMaterialEnabled = GLboolean(GL_TRUE)
+        self.effect.texture2d0.enabled = GLboolean(GL_FALSE);
         
         self.effect.material.ambientColor = GLKVector4Make(0.3,0.3,0.3,1.0);
         self.effect.material.diffuseColor = GLKVector4Make(0.3,0.3,0.3,1.0);
@@ -173,12 +165,11 @@ final class CubeViewController: GLKViewController {
     
     private func setupGL() {
         
-        _shader = Shader()
-        _shader.loadShaders()
+//        _shader = Shader()
+//        _shader.loadShaders()
         
         // init GL stuff here
         glClearColor(0.0, 0.0, 0.0, 1.0);
-        glEnable(GLenum(GL_CULL_FACE))
         glEnable(GLenum(GL_DEPTH_TEST));
         glDepthFunc(GLenum(GL_LEQUAL));
         // Enable Transparency
@@ -398,6 +389,7 @@ extension CubeViewController: GLKViewControllerDelegate {
         let aspect = fabsf(Float(view.bounds.size.width) / Float(view.bounds.size.height))
         let projectionMatrix = GLKMatrix4MakePerspective(GLKMathDegreesToRadians(65.0), aspect, 0.1, 100.0);
         self.effect.transform.projectionMatrix = projectionMatrix
+        _projectionMatrix = projectionMatrix
         
         if (_slerping) {
             _slerpCur += Float(self.timeSinceLastUpdate);
@@ -420,6 +412,7 @@ extension CubeViewController: GLKViewControllerDelegate {
         modelViewMatrix = GLKMatrix4Multiply(modelViewMatrix, scaleMatrix);
 
         self.effect.transform.modelviewMatrix = modelViewMatrix
+        _modelViewMatrix = modelViewMatrix
 
         // Compute the model view matrix for the object rendered with ES2
         modelViewMatrix = GLKMatrix4MakeTranslation(0.0, 0.0, -6.0);
@@ -431,6 +424,14 @@ extension CubeViewController: GLKViewControllerDelegate {
 
         _modelViewProjectionMatrix = GLKMatrix4Multiply(projectionMatrix, modelViewMatrix);
  
+        updateDE(_cube)
+    }
+    
+    func updateDE(_ de:DrawableElement) {
+        de._userScale = 1.0
+        de._projectionMatrix = _projectionMatrix;
+        de._modelViewMatrix = _modelViewMatrix;
+        de.update(Float(self.timeSinceLastUpdate));
     }
 }
 
@@ -452,10 +453,10 @@ extension CubeViewController {
         // Clear the contents of the screen (the color buffer) with the black color we just set.
         glClear(GLbitfield(GL_COLOR_BUFFER_BIT) | GLbitfield(GL_DEPTH_BUFFER_BIT))
         
-        effect.prepareToDraw()
+        _cube.draw();
         
-        _cube.render();
-        _triangle.render();
+//        effect.prepareToDraw()
+//        _triangle.render();
     }
     
     //

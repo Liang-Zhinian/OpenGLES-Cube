@@ -9,12 +9,17 @@
 #import <Foundation/Foundation.h>
 #import <GLKit/GLKit.h>
 
-@interface Shader : NSObject
+@interface Shader : NSObject {
+    GLuint _program;
+}
+@property (readonly)  GLuint program;
 
-- (BOOL)loadShaders;
+- (BOOL)loadShaders:(NSString*)filename;
 
-@property (nonatomic, assign)  GLuint program;
-@property (nonatomic, assign)  GLint uniformModelViewProjectionMatrix;
-@property (nonatomic, assign)  GLint uniformNormalMatrix;
+- (void)addAttribute:(NSString*)_attrib;
+- (void)addUniform:(NSString*)_uniform;
+- (int)getAttribute:(NSString*)_attrib;
+- (int)getUniform:(NSString*)_uniform;
 
 @end
+

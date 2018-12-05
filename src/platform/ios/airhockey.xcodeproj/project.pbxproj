@@ -49,6 +49,8 @@
 		0ADF1892178E2185005DA99E /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 0ADF1891178E2185005DA99E /* Default-568h@2x.png */; };
 		0ADF1895178E2185005DA99E /* MainStoryboard_iPhone.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0ADF1893178E2185005DA99E /* MainStoryboard_iPhone.storyboard */; };
 		0ADF1898178E2185005DA99E /* MainStoryboard_iPad.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0ADF1896178E2185005DA99E /* MainStoryboard_iPad.storyboard */; };
+		8A4B88EE21B7AC25007A8974 /* ShaderManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 8A4B88ED21B7AC25007A8974 /* ShaderManager.m */; };
+		8A4B88F121B7B256007A8974 /* DrawableElement.m in Sources */ = {isa = PBXBuildFile; fileRef = 8A4B88F021B7B256007A8974 /* DrawableElement.m */; };
 		8A5AE6BE21B2D4A30042B047 /* Array+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A5AE6B421B2D4A30042B047 /* Array+Helpers.swift */; };
 		8A5AE6BF21B2D4A30042B047 /* Camera.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A5AE6B521B2D4A30042B047 /* Camera.swift */; };
 		8A5AE6C021B2D4A30042B047 /* Geometry.m in Sources */ = {isa = PBXBuildFile; fileRef = 8A5AE6B821B2D4A30042B047 /* Geometry.m */; };
@@ -129,6 +131,10 @@
 		0ADF1897178E2185005DA99E /* en */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = en; path = en.lproj/MainStoryboard_iPad.storyboard; sourceTree = "<group>"; };
 		0ADF189D178E2185005DA99E /* AirHockeyViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AirHockeyViewController.h; sourceTree = "<group>"; };
 		0ADF189E178E2185005DA99E /* AirHockeyViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AirHockeyViewController.m; sourceTree = "<group>"; };
+		8A4B88EC21B7AC25007A8974 /* ShaderManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ShaderManager.h; sourceTree = "<group>"; };
+		8A4B88ED21B7AC25007A8974 /* ShaderManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ShaderManager.m; sourceTree = "<group>"; };
+		8A4B88EF21B7B256007A8974 /* DrawableElement.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DrawableElement.h; sourceTree = "<group>"; };
+		8A4B88F021B7B256007A8974 /* DrawableElement.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DrawableElement.m; sourceTree = "<group>"; };
 		8A5AE6B221B2D4A20042B047 /* airhockey-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "airhockey-Bridging-Header.h"; sourceTree = "<group>"; };
 		8A5AE6B421B2D4A30042B047 /* Array+Helpers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Array+Helpers.swift"; sourceTree = "<group>"; };
 		8A5AE6B521B2D4A30042B047 /* Camera.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Camera.swift; sourceTree = "<group>"; };
@@ -355,6 +361,10 @@
 				8AAEDBE321B632B4006A8AFB /* Triangle.swift */,
 				8AAEDBE521B671A2006A8AFB /* Texture.h */,
 				8AAEDBE621B671A2006A8AFB /* Texture.m */,
+				8A4B88EC21B7AC25007A8974 /* ShaderManager.h */,
+				8A4B88ED21B7AC25007A8974 /* ShaderManager.m */,
+				8A4B88EF21B7B256007A8974 /* DrawableElement.h */,
+				8A4B88F021B7B256007A8974 /* DrawableElement.m */,
 			);
 			path = Core;
 			sourceTree = "<group>";
@@ -449,6 +459,8 @@
 				0A8FBF8B179E073A0039BA29 /* platform_file_utils.c in Sources */,
 				0A8FBF8C179E073A0039BA29 /* platform_log.c in Sources */,
 				0A8FBF7C179E07320039BA29 /* png.c in Sources */,
+				8A4B88F121B7B256007A8974 /* DrawableElement.m in Sources */,
+				8A4B88EE21B7AC25007A8974 /* ShaderManager.m in Sources */,
 				0A8FBF7D179E07320039BA29 /* pngerror.c in Sources */,
 				0A8FBF7E179E07320039BA29 /* pngget.c in Sources */,
 				0A8FBF7F179E07320039BA29 /* pngmem.c in Sources */,

@@ -20,9 +20,9 @@
 @synthesize textureInfo = _textureInfo;
 @synthesize effectPropertyTexture = _effectPropertyTexture;
 
-- (id) initWithPathForResource:(NSString *) path ofType:(NSString *) type {
+- (id) initWithPathForResource:(NSString *) relativePath ofType:(NSString *) type {
     if(self = [super init]) {
-        NSString *path = [[NSBundle mainBundle] pathForResource:path ofType:type];
+        NSString *path = [[NSBundle mainBundle] pathForResource:relativePath ofType:type];
         
         NSError *error;
         NSDictionary *options = [NSDictionary dictionaryWithObject:[NSNumber numberWithBool:YES]
