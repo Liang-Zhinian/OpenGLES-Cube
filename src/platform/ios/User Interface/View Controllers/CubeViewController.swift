@@ -135,7 +135,7 @@ final class CubeViewController: GLKViewController {
     
     func setupEffect() {
 //        self.effect.texture2d0.enabled = GLboolean(GL_TRUE)
-        configureDefaultLight()
+//        configureDefaultLight()
 //        configureDefaultMaterial()
     }
     

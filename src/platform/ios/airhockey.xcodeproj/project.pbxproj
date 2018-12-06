@@ -62,7 +62,7 @@
 		8AAEDBE021B61A79006A8AFB /* Int+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AAEDBDF21B61A79006A8AFB /* Int+Helpers.swift */; };
 		8AAEDBE221B62C08006A8AFB /* Ray.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AAEDBE121B62C08006A8AFB /* Ray.swift */; };
 		8AAEDBE421B632B4006A8AFB /* Triangle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AAEDBE321B632B4006A8AFB /* Triangle.swift */; };
-		8AAEDBE721B671A2006A8AFB /* Texture.m in Sources */ = {isa = PBXBuildFile; fileRef = 8AAEDBE621B671A2006A8AFB /* Texture.m */; };
+		8AAEDBE721B671A2006A8AFB /* TextureLoader.m in Sources */ = {isa = PBXBuildFile; fileRef = 8AAEDBE621B671A2006A8AFB /* TextureLoader.m */; };
 		8AD1F02E21B7FF6400506882 /* CubeModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AD1F02D21B7FF6400506882 /* CubeModel.swift */; };
 /* End PBXBuildFile section */
 
@@ -149,8 +149,8 @@
 		8AAEDBDF21B61A79006A8AFB /* Int+Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Int+Helpers.swift"; sourceTree = "<group>"; };
 		8AAEDBE121B62C08006A8AFB /* Ray.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Ray.swift; sourceTree = "<group>"; };
 		8AAEDBE321B632B4006A8AFB /* Triangle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Triangle.swift; sourceTree = "<group>"; };
-		8AAEDBE521B671A2006A8AFB /* Texture.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Texture.h; sourceTree = "<group>"; };
-		8AAEDBE621B671A2006A8AFB /* Texture.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Texture.m; sourceTree = "<group>"; };
+		8AAEDBE521B671A2006A8AFB /* TextureLoader.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TextureLoader.h; sourceTree = "<group>"; };
+		8AAEDBE621B671A2006A8AFB /* TextureLoader.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TextureLoader.m; sourceTree = "<group>"; };
 		8AD1F02D21B7FF6400506882 /* CubeModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CubeModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -359,8 +359,8 @@
 				8AAEDBDD21B6198E006A8AFB /* Utils.swift */,
 				8AAEDBE121B62C08006A8AFB /* Ray.swift */,
 				8AAEDBE321B632B4006A8AFB /* Triangle.swift */,
-				8AAEDBE521B671A2006A8AFB /* Texture.h */,
-				8AAEDBE621B671A2006A8AFB /* Texture.m */,
+				8AAEDBE521B671A2006A8AFB /* TextureLoader.h */,
+				8AAEDBE621B671A2006A8AFB /* TextureLoader.m */,
 				8A4B88EC21B7AC25007A8974 /* ShaderManager.h */,
 				8A4B88ED21B7AC25007A8974 /* ShaderManager.m */,
 				8A4B88EF21B7B256007A8974 /* DrawableElement.h */,
@@ -442,7 +442,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8AAEDBE721B671A2006A8AFB /* Texture.m in Sources */,
+				8AAEDBE721B671A2006A8AFB /* TextureLoader.m in Sources */,
 				0A8FBF91179E07600039BA29 /* buffer.c in Sources */,
 				0A8FBF92179E07600039BA29 /* game.c in Sources */,
 				0A8FBF93179E07600039BA29 /* image.c in Sources */,

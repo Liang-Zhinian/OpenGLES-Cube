@@ -3,7 +3,7 @@
 //
 
 #import "Core/Shader.h"
-#import "Core/Texture.h"
+#import "Core/TextureLoader.h"
 #import "Model/Geometry.h"
 #import "Core/DrawableElement.h"
 #import "Core/Shader.h"
