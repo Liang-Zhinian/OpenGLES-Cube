@@ -10,24 +10,25 @@
 #import <GLKit/GLKit.h>
 
 @interface TextureLoader() {
-    GLuint texture;
+    GLuint _texture;
 }
-
 @end
 
 @implementation TextureLoader
+@synthesize texture = _texture;
+
 -(instancetype)init {
     self = [super init];
     if (self) {
-        texture = 0;
+        _texture = 0;
     }
     return self;
 }
 
 
 -(void)generateTexture {
-    glGenTextures(1, &texture);
-    glBindTexture(GL_TEXTURE_2D, texture);
+    glGenTextures(1, &_texture);
+    glBindTexture(GL_TEXTURE_2D, _texture);
     [self setTextParameters];
 }
 
@@ -50,8 +51,8 @@
 -(void)renderFramebufferToTexture:(GLuint)framebuffer{
     
     glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
-    glBindTexture(GL_TEXTURE_2D, texture);
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, texture, 0);
+    glBindTexture(GL_TEXTURE_2D, _texture);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, _texture, 0);
     
 }
 
@@ -61,29 +62,50 @@
     GLKTextureInfo* textureInfo = [GLKTextureLoader textureWithContentsOfFile:texturePath options:nil error:&error];
     if (!error) {
         // set texture name to current texture
-        texture = textureInfo.name;
+        _texture = textureInfo.name;
     } else {
         _generated = NO;
     }
     return _generated;
 }
 
++ (GLKTextureInfo*) generateTexture:(NSString *) relativePath ofType:(NSString *) type {
+    NSString *path = [[NSBundle mainBundle] pathForResource:relativePath ofType:type];
+    
+    NSError *error;
+    NSDictionary *options = [NSDictionary dictionaryWithObject:[NSNumber numberWithBool:YES]
+                                                        forKey:GLKTextureLoaderOriginBottomLeft];
+    
+    
+    GLKTextureInfo* _textureInfo = [GLKTextureLoader textureWithContentsOfFile:path
+                                                                       options:options error:&error];
+    if (_textureInfo == nil)
+        NSLog(@"Error loading texture: %@", [error localizedDescription]);
+    
+    GLKEffectPropertyTexture* _effectPropertyTexture = [[GLKEffectPropertyTexture alloc] init];
+    _effectPropertyTexture.enabled = YES;
+    _effectPropertyTexture.envMode = GLKTextureEnvModeDecal;
+    _effectPropertyTexture.name = _textureInfo.name;
+    
+    return _textureInfo;
+}
+
 -(void)activeTexture:(short)textureUnit {
     glActiveTexture(GL_TEXTURE0 + textureUnit);
-    glBindTexture(GL_TEXTURE_2D, texture);
+    glBindTexture(GL_TEXTURE_2D, _texture);
 }
 
 
 -(void)uploadData:(UploadData)uploadData
 {
-    glBindTexture(GL_TEXTURE_2D, texture);
+    glBindTexture(GL_TEXTURE_2D, _texture);
     glTexImage2D(GL_TEXTURE_2D, 0, uploadData.textureFormat, uploadData.textureSize.width, uploadData.textureSize.height, 0, uploadData.textureFormat, GL_UNSIGNED_BYTE, uploadData.data);
     [self setTextParameters];
 }
 
 -(void)deleteTexture {
-    glDeleteTextures(1, &texture);
-    texture = 0;
+    glDeleteTextures(1, &_texture);
+    _texture = 0;
 }
 
 -(void)dealloc {

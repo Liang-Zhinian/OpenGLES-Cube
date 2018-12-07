@@ -88,7 +88,7 @@ struct Utils {
         glBindBuffer(GLenum(GL_ELEMENT_ARRAY_BUFFER), ebo)
         // Pass data for our element indices to the element buffer object.
         glBufferData(GLenum(GL_ELEMENT_ARRAY_BUFFER), size, data, usage)
-//        glBindBuffer(GLenum(GL_ARRAY_BUFFER), 0);
+//        glBindBuffer(GLenum(GL_ELEMENT_ARRAY_BUFFER), 0);
         
         return ebo;
     }

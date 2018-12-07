@@ -40,5 +40,9 @@ void main()
     diffuse = diffuse + 0.3;
     
     // Multiply the color by the diffuse illumination level to get final output color.
-    gl_FragColor = (v_Color * diffuse * texture2D(u_Texture, v_TextureCoord));
+    // OpenGL's origin for textures is in the lower left corner (and not the upper-left corner).
+    // So swap the texture Y coordinates;
+    // https://stackoverflow.com/questions/16500345/upside-down-texture-opengl-es-2-0-android
+    vec2 flipped_texcoord = vec2(v_TextureCoord.x, 1.0 - v_TextureCoord.y);
+    gl_FragColor = (v_Color * diffuse * texture2D(u_Texture, flipped_texcoord));
 }

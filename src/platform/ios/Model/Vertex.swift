@@ -119,32 +119,32 @@ struct VertexGenerator {
             Vertex(Position: F3(x:x-unit, y-unit, z-unit),    Color: color, Normal:NORMAL["-Y"]! ) //23
             
             */
- 
+            // Front
             Vertex(Position: F3(x:x+unit, y-unit, z+unit), Color: color, TexCoord: (x:0, y:1), Normal:NORMAL["Z"]! ), //0
             Vertex(Position: F3(x:x+unit, y+unit, z+unit), Color: color, TexCoord: (0, 2.0/3.0), Normal:NORMAL["Z"]! ), //1
             Vertex(Position: F3(x:x-unit, y+unit, z+unit), Color: color, TexCoord: (1.0/3.0, 2.0/3.0), Normal:NORMAL["Z"]! ), //2
             Vertex(Position: F3(x:x-unit, y-unit, z+unit), Color: color, TexCoord: (1.0/3.0, 1), Normal:NORMAL["Z"]! ), //3
-
+            // Back
             Vertex(Position: F3(x:x+unit, y+unit, z-unit), Color: color, TexCoord: (1.0/3.0, 1), Normal:NORMAL["-Z"]! ), //4
             Vertex(Position: F3(x:x+unit, y-unit, z-unit), Color: color, TexCoord: (1.0/3.0, 2.0/3.0), Normal:NORMAL["-Z"]! ), //5
             Vertex(Position: F3(x:x-unit, y-unit, z-unit), Color: color, TexCoord: (2.0/3.0, 2.0/3.0), Normal:NORMAL["-Z"]! ), //6
             Vertex(Position: F3(x:x-unit, y+unit, z-unit), Color: color, TexCoord: (2.0/3.0, 1), Normal:NORMAL["-Z"]! ), //7
-
+            // Left
             Vertex(Position: F3(x:x-unit, y-unit, z+unit), Color: color, TexCoord: (2.0/3.0, 1), Normal:NORMAL["-X"]! ), //8
             Vertex(Position: F3(x:x-unit, y+unit, z+unit), Color: color, TexCoord: (2.0/3.0, 2.0/3.0), Normal:NORMAL["-X"]! ), //9
             Vertex(Position: F3(x:x-unit, y+unit, z-unit), Color: color, TexCoord: (1, 2.0/3.0), Normal:NORMAL["-X"]! ), //10
             Vertex(Position: F3(x:x-unit, y-unit, z-unit), Color: color, TexCoord: (1, 1), Normal:NORMAL["-X"]! ), //11
-
+            // Right
             Vertex(Position: F3(x:x+unit, y-unit, z-unit), Color: color, TexCoord: (0, 2.0/3.0), Normal:NORMAL["X"]! ), // 12
             Vertex(Position: F3(x:x+unit, y+unit, z-unit), Color: color, TexCoord: (0, 1.0/3.0), Normal:NORMAL["X"]! ), //13
             Vertex(Position: F3(x:x+unit, y+unit, z+unit), Color: color, TexCoord: (1.0/3.0, 1.0/3.0), Normal:NORMAL["X"]! ), //14
             Vertex(Position: F3(x:x+unit, y-unit, z+unit), Color: color, TexCoord: (1.0/3.0, 2.0/3.0), Normal:NORMAL["X"]! ), //15
-
+            // Top
             Vertex(Position: F3(x:x+unit, y+unit, z+unit), Color: color, TexCoord: (1.0/3.0, 2.0/3.0), Normal:NORMAL["Y"]!), //16
             Vertex(Position: F3(x:x+unit, y+unit, z-unit), Color: color, TexCoord: (1.0/3.0, 1.0/3.0), Normal:NORMAL["Y"]! ), //17
             Vertex(Position: F3(x:x-unit, y+unit, z-unit), Color: color, TexCoord: (2.0/3.0, 1.0/3.0), Normal:NORMAL["Y"]! ), // 18
             Vertex(Position: F3(x:x-unit, y+unit, z+unit), Color: color, TexCoord: (2.0/3.0, 2.0/3.0), Normal:NORMAL["Y"]! ), //19
-
+            // Bottom
             Vertex(Position: F3(x:x+unit, y-unit, z-unit), Color: color, TexCoord: (2.0/3.0, 2.0/3.0), Normal:NORMAL["-Y"]! ), //20
             Vertex(Position: F3(x:x+unit, y-unit, z+unit), Color: color, TexCoord: (2.0/3.0, 1.0/3.0), Normal:NORMAL["-Y"]! ), //21
             Vertex(Position: F3(x:x-unit, y-unit, z+unit), Color: color, TexCoord: (1, 1.0/3.0), Normal:NORMAL["-Y"]! ), //22
@@ -161,7 +161,7 @@ struct VertexGenerator {
             vertexCount+2, vertexCount+3, vertexCount,
             
             vertexCount+4, vertexCount+6, vertexCount+5,
-            vertexCount+4, vertexCount+5, vertexCount+7,
+            vertexCount+4, vertexCount+6, vertexCount+7,
             
             vertexCount+8, vertexCount+9, vertexCount+10,
             vertexCount+10, vertexCount+11, vertexCount+8,

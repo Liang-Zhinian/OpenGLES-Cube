@@ -65,7 +65,7 @@ ShaderManager* shaderManagerSingleton = nil;
             [_simpleShader addAttribute:    @"Position"];
             [_simpleShader addAttribute:    @"TextureCoord"];
         }
-        if ([name isEqualToString:@"/assets/shaders/cube_shader"]){
+        if ([name isEqualToString:@"assets/shaders/cube_shader"]){
             [_simpleShader addUniform:        @"u_ProjectionMatrix"];
             [_simpleShader addUniform:        @"u_MvMatrix"];
             [_simpleShader addUniform:        @"u_LightPos"];

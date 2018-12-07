@@ -63,6 +63,8 @@ final class CubeViewController: GLKViewController {
     var _shader:Shader!
     var _cube:Cube!
     var _triangle:Triangle!
+    var textureInfo:GLKTextureInfo!;
+    var renderWithGLKit:Bool = false
     
     //
     // MARK: - Initialization
@@ -134,17 +136,19 @@ final class CubeViewController: GLKViewController {
     }
     
     func setupEffect() {
-//        self.effect.texture2d0.enabled = GLboolean(GL_TRUE)
-//        configureDefaultLight()
-//        configureDefaultMaterial()
+        if (renderWithGLKit) {
+            self.effect.texture2d0.enabled = GLboolean(GL_TRUE)
+            configureDefaultLight()
+            //        configureDefaultMaterial()
+        }
     }
     
     func configureDefaultLight(){
         self.effect.light0.enabled = GLboolean(GL_TRUE)
-        self.effect.light0.position = GLKVector4Make(2, 5, 10, 1.0);
+        self.effect.light0.position = GLKVector4Make(0, 0,-10,1.0);
         self.effect.light0.diffuseColor = GLKVector4Make(1, 1, 1, 1.0);
-        self.effect.light0.ambientColor = GLKVector4Make(1, 0, 1, 1);
-        self.effect.light0.specularColor = GLKVector4Make(1, 1, 0, 1);
+        self.effect.light0.ambientColor = GLKVector4Make(1, 1, 1, 1.0);
+//        self.effect.light0.specularColor = GLKVector4Make(1, 1, 0, 1);
     }
     
     func configureDefaultMaterial() {
@@ -158,6 +162,13 @@ final class CubeViewController: GLKViewController {
         self.effect.material.specularColor = GLKVector4Make(0.0,0.0,0.0,1.0);
         
         self.effect.material.shininess = 0;
+    }
+    
+    func configureDefaultTexture() {
+        self.effect.texture2d0.enabled = GLboolean(GL_TRUE)
+        self.textureInfo = TextureLoader.generateTexture("assets/textures/texture_numbers", ofType: "png")
+        self.effect.texture2d0.name = textureInfo.name;
+    
     }
     
     private func setupGL() {
@@ -175,7 +186,9 @@ final class CubeViewController: GLKViewController {
         
         _triangle = Triangle();
         
-//        effect.texture2d0.name = _cube.texture.effectPropertyTexture.name;
+        if (renderWithGLKit) {
+            configureDefaultTexture()
+        }
     }
     
     func addGestureRecognizer() {
@@ -382,7 +395,7 @@ extension CubeViewController: GLKViewControllerDelegate {
         
         let aspect = fabsf(Float(view.bounds.size.width) / Float(view.bounds.size.height))
         let projectionMatrix = GLKMatrix4MakePerspective(GLKMathDegreesToRadians(65.0), aspect, 0.1, 100.0);
-//        self.effect.transform.projectionMatrix = projectionMatrix
+        self.effect.transform.projectionMatrix = projectionMatrix
         _projectionMatrix = projectionMatrix
         
         if (_slerping) {
@@ -405,7 +418,7 @@ extension CubeViewController: GLKViewControllerDelegate {
         modelViewMatrix = GLKMatrix4Multiply(modelViewMatrix, rotationMatrix);
         modelViewMatrix = GLKMatrix4Multiply(modelViewMatrix, scaleMatrix);
 
-//        self.effect.transform.modelviewMatrix = modelViewMatrix
+        self.effect.transform.modelviewMatrix = modelViewMatrix
         _modelViewMatrix = modelViewMatrix
 
         // Compute the model view matrix for the object rendered with ES2
@@ -447,9 +460,13 @@ extension CubeViewController {
         // Clear the contents of the screen (the color buffer) with the black color we just set.
         glClear(GLbitfield(GL_COLOR_BUFFER_BIT) | GLbitfield(GL_DEPTH_BUFFER_BIT))
         
+        if (renderWithGLKit) {
+            effect.prepareToDraw()
+        }
+        
         _cube.draw();
         
-//        effect.prepareToDraw()
+        //        effect.prepareToDraw()
 //        _triangle.render();
     }
     

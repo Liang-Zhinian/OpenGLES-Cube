@@ -34,6 +34,9 @@ typedef struct{
  */
 @interface TextureLoader : NSObject
 
+
+@property (nonatomic, readonly) GLuint texture;
+
 /*!
  @method         generateTexture
  @discussion     Generate a GL texture
@@ -53,6 +56,8 @@ typedef struct{
  @discussion     Generate a GL texture and upload data into the texture from texturePath.
  */
 -(BOOL)generateTexture:(NSString*)texturePath;
+
++ (GLKTextureInfo*) generateTexture:(NSString *) relativePath ofType:(NSString *) type;
 
 /*!
  @method         renderFramebufferToTexture:

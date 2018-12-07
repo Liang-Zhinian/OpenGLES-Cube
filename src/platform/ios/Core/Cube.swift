@@ -24,19 +24,13 @@ class Cube : DrawableElement {
     /// to draw elements on screen, and then whenever you want to draw you simply bind your VAO and it stores those other
     /// vertex attribute calls.
     var vao = GLuint()
-    var textureObjectId = GLuint()
-    var textureVBO = GLuint()
     
-    var _textureMatrix:GLKMatrix4!
+    var textureObjectId = GLuint()
     
     var Vertices:[Vertex]=[]
     var Indices:[GLubyte]=[]
-    var verticesBuffer:[GLfloat] = []
-    var colorBuffer:[GLfloat] = []
-    var normalBuffer:[GLfloat] = []
-    var textureBuffer:[GLfloat] = []
     
-    public var texture:TextureLoader!
+    var renderWithGLKit:Bool = false
     
     override init() {
         super.init();
@@ -50,65 +44,16 @@ class Cube : DrawableElement {
         
         for i in (0 ..< Vertices.count) {
             let vertex = Vertices[i]
-            verticesBuffer.append(contentsOf: [vertex.Position.x, vertex.Position.y, vertex.Position.z])
-            colorBuffer.append(contentsOf: [vertex.Color.r, vertex.Color.g, vertex.Color.b, vertex.Color.a])
-            textureBuffer.append(contentsOf: [vertex.TexCoord.x, vertex.TexCoord.y])
-            normalBuffer.append(contentsOf: [vertex.Normal.x, vertex.Normal.y, vertex.Normal.z])
+//            verticesBuffer.append(contentsOf: [vertex.Position.x, vertex.Position.y, vertex.Position.z])
+//            colorBuffer.append(contentsOf: [vertex.Color.r, vertex.Color.g, vertex.Color.b, vertex.Color.a])
+//            textureBuffer.append(contentsOf: [vertex.TexCoord.x, vertex.TexCoord.y])
+//            normalBuffer.append(contentsOf: [vertex.Normal.x, vertex.Normal.y, vertex.Normal.z])
         }
-        textureBuffer = [
-            // Front face
-            0.0, 0.0,
-            0.0, 1.0,
-            1.0, 0.0,
-            0.0, 1.0,
-            1.0, 1.0,
-            1.0, 0.0,
-            
-            // Right face
-            0.0, 0.0,
-            0.0, 1.0,
-            1.0, 0.0,
-            0.0, 1.0,
-            1.0, 1.0,
-            1.0, 0.0,
-            
-            // Back face
-            0.0, 0.0,
-            0.0, 1.0,
-            1.0, 0.0,
-            0.0, 1.0,
-            1.0, 1.0,
-            1.0, 0.0,
-            
-            // Left face
-            0.0, 0.0,
-            0.0, 1.0,
-            1.0, 0.0,
-            0.0, 1.0,
-            1.0, 1.0,
-            1.0, 0.0,
-            
-            // Top face
-            0.0, 0.0,
-            0.0, 1.0,
-            1.0, 0.0,
-            0.0, 1.0,
-            1.0, 1.0,
-            1.0, 0.0,
-            
-            // Bottom face
-            0.0, 0.0,
-            0.0, 1.0,
-            1.0, 0.0,
-            0.0, 1.0,
-            1.0, 1.0,
-            1.0, 0.0
-        ];
     }
     
     func createVertexBuffers() {
         // Generate and bind a vertex array object.
-        //        vao = Utils.createVAO()
+        vao = Utils.createVAO()
         
         // The size, in memory, of a Vertex structure.
         let vertexSize = MemoryLayout<Vertex>.stride
@@ -116,208 +61,166 @@ class Cube : DrawableElement {
         // VBO
         let vertexBufferSize = Vertices.count * vertexSize
         vbo = Utils.createVBO(vertexBufferSize, &Vertices, GLenum(GL_DYNAMIC_DRAW));
+//        glBindBuffer(GLenum(GL_ARRAY_BUFFER), vbo)
         
         // EBO
         let indexBufferSize = Indices.size()
         ebo = Utils.createEBO(indexBufferSize, &Indices, GLenum(GL_DYNAMIC_DRAW));
+//        glBindBuffer(GLenum(GL_ELEMENT_ARRAY_BUFFER), ebo)
         
-//        textureVBO = Utils.createVBO(textureBuffer.size(), &textureBuffer, GLenum(GL_DYNAMIC_DRAW));
+        let shader:Shader = ShaderManager.getShaderWithName("assets/shaders/cube_shader");
         
-        /*
-         // Enable the position vertex attribute to then specify information about how the position of a vertex is stored.
-         let vertexAttribPosition = GLuint(GLKVertexAttrib.position.rawValue)
-         glEnableVertexAttribArray(vertexAttribPosition)
-         glVertexAttribPointer(vertexAttribPosition, 3, GLenum(GL_FLOAT), GLboolean(UInt8(GL_FALSE)), GLsizei(vertexSize), nil)
-         
+        var vertexAttribPosition = GLuint(shader.getAttribute("a_Position"));
+        
+        var vertexAttribColor = GLuint(shader.getAttribute("a_Color"));
+        
+        var vertexAttribNormal = GLuint(shader.getAttribute("a_Normal"));
+        
+        var vertexAttribTexCoord0 = GLuint(shader.getAttribute("a_TextureCoord"))
+        
+        if (renderWithGLKit) {
+            vertexAttribPosition = GLuint(GLKVertexAttrib.position.rawValue)
+            
+            vertexAttribColor = GLuint(GLKVertexAttrib.color.rawValue)
+            
+            vertexAttribNormal = GLuint(GLKVertexAttrib.normal.rawValue)
+            
+            vertexAttribTexCoord0 = GLuint(GLKVertexAttrib.texCoord0.rawValue)
+        }
+        
+        configurePosition(attribute: vertexAttribPosition, stride: GLsizei(vertexSize))
+        configureColor(attribute: vertexAttribColor, stride: GLsizei(vertexSize))
+        configureTexture(attribute: vertexAttribTexCoord0, stride: GLsizei(vertexSize))
+        configureNormal(attribute: vertexAttribNormal, stride: GLsizei(vertexSize))
+        
+        glBindBuffer(GLenum(GL_ARRAY_BUFFER), 0);
+        
+        // were done so unbind the VAO
+        glBindVertexArrayOES(0);
+    }
+    
+    func configurePosition(attribute: GLuint, stride: GLsizei){
+        // Enable the position vertex attribute to then specify information about how the position of a vertex is stored.
+         glEnableVertexAttribArray(attribute)
+         glVertexAttribPointer(attribute, 3, GLenum(GL_FLOAT), GLboolean(UInt8(GL_FALSE)), stride, nil)
+    }
+    
+    func configureColor(attribute: GLuint, stride: GLsizei){
          // Enable the colors vertex attribute to then specify information about how the color of a vertex is stored.
-         let vertexAttribColor = GLuint(GLKVertexAttrib.color.rawValue)
          // The byte offset, in memory, of our color information within a Vertex object.
          let colorOffset = MemoryLayout<GLfloat>.stride * 3
          // Swift pointer object that stores the offset of the color information within our Vertex structure.
          let colorOffsetPointer = UnsafeRawPointer(bitPattern: colorOffset)
-         glEnableVertexAttribArray(vertexAttribColor)
-         glVertexAttribPointer(vertexAttribColor, 4, GLenum(GL_FLOAT), GLboolean(UInt8(GL_FALSE)), GLsizei(vertexSize), colorOffsetPointer)
-        
-        let vertexAttribNormal = GLuint(GLKVertexAttrib.normal.rawValue)
-        let normalOffset = MemoryLayout<GLfloat>.stride * 9
-        let normalOffsetPointer = UnsafePointer<Int>(bitPattern: normalOffset)
-        glEnableVertexAttribArray(vertexAttribNormal)
-        glVertexAttribPointer(vertexAttribNormal, 3, GLenum(GL_FLOAT), GLboolean(UInt8(GL_FALSE)), GLsizei(vertexSize), normalOffsetPointer)
-         */
-        
-        /*
-        //Textures
-        let vertexAttribTexCoord0 = GLuint(GLKVertexAttrib.texCoord0.rawValue)
-        let textureOffset = MemoryLayout<GLfloat>.stride * 7
-        let textureOffsetPointer = UnsafePointer<Int>(bitPattern: textureOffset)
-        glEnableVertexAttribArray(vertexAttribTexCoord0);
-        glVertexAttribPointer(vertexAttribTexCoord0, 2, GLenum(GL_FLOAT), GLboolean(UInt8(GL_FALSE)), GLsizei(vertexSize), textureOffsetPointer);
-        
-        glActiveTexture(GLenum(GL_TEXTURE0));
-        */
-        textureObjectId = configureDefaultTexture(fileName: "assets/textures/texture_numbers.png");
-        
-        glBindBuffer(GLenum(GL_ARRAY_BUFFER), 0);
-        glBindVertexArrayOES(0)
+         glEnableVertexAttribArray(attribute)
+         glVertexAttribPointer(attribute, 4, GLenum(GL_FLOAT), GLboolean(UInt8(GL_FALSE)), stride, colorOffsetPointer)
     }
     
-    func configureDefaultTexture(fileName: String) -> GLuint {
-//        texture = Texture(pathForResource: "/assets/textures/texture_numbers", ofType: "png")
-//        textureObjectId = load_png_asset_into_texture("textures/texture_numbers.png")
+    func configureNormal(attribute: GLuint, stride: GLsizei){
+        let normalOffset = MemoryLayout<GLfloat>.stride * 9
+        let normalOffsetPointer = UnsafePointer<Int>(bitPattern: normalOffset)
+        glEnableVertexAttribArray(attribute)
+        glVertexAttribPointer(attribute, 3, GLenum(GL_FLOAT), GLboolean(UInt8(GL_FALSE)), stride, normalOffsetPointer)
+    }
+    
+    func configureTexture(attribute: GLuint, stride: GLsizei){
+        //Textures
+        let textureOffset = MemoryLayout<GLfloat>.stride * 7
+        let textureOffsetPointer = UnsafePointer<Int>(bitPattern: textureOffset)
+        glEnableVertexAttribArray(attribute);
+        glVertexAttribPointer(attribute, 2, GLenum(GL_FLOAT), GLboolean(UInt8(GL_FALSE)), stride, textureOffsetPointer);
+        glActiveTexture(GLenum(GL_TEXTURE0));
+        if (!renderWithGLKit) {
+            configureDefaultTexture(fileName: "assets/textures/texture_numbers.png");
+        }
+    }
+    
+    func configureDefaultTexture(fileName: String) {
         let uiImage = UIImage(named: fileName);
         if (uiImage == nil) {
             print("Failed to load image " + fileName);
             exit(1);
         }
         let spriteImage:CGImage = uiImage!.cgImage!;
-//        if (spriteImage == nil) {
-//            print("Failed to load image %@", fileName);
-//            exit(1);
-//        }
     
         let width:GLsizei = GLsizei(spriteImage.width);
         let height:GLsizei = GLsizei(spriteImage.height);
         let rect = CGRect.init(origin: CGPoint(x: 0.0, y: 0.0), size: CGSize.init(width: Int(width), height: Int(height)))
-    
-        var spriteData:[GLubyte] = []
     
         let colorSpace:CGColorSpace = CGColorSpaceCreateDeviceRGB()
         let bitmapInfo = CGBitmapInfo(rawValue: CGImageAlphaInfo.premultipliedLast.rawValue)
         
         var bitmapByteCount:Int;
         var bitmapBytesPerRow:Int;
-        let pixelsWide = 4;
-        let pixelsHigh = 4;
+        let pixelsWide = Int(width);
+        let pixelsHigh = Int(height);
         
         bitmapBytesPerRow   = (pixelsWide * 4);// 1
         bitmapByteCount     = (bitmapBytesPerRow * pixelsHigh);
         
-        guard let spriteContext = CGContext.init(data: nil, width: Int(width), height: Int(height), bitsPerComponent: bitmapByteCount, bytesPerRow: bitmapBytesPerRow, space: colorSpace, bitmapInfo: UInt32(bitmapInfo.rawValue)) else {
-            // cannot create context - handle error
-            exit(1)
+        let pixelData = UnsafeMutablePointer<UInt8>.allocate(capacity: bitmapByteCount)
+
+        guard let spriteContext = CGContext.init(data: pixelData,
+                                                 width: Int(width),
+                                                 height: Int(height),
+                                                 bitsPerComponent: 8,
+                                                 bytesPerRow: bitmapBytesPerRow,
+                                                 space: colorSpace,
+                                                 bitmapInfo: UInt32(bitmapInfo.rawValue))
+            else {
+                // cannot create context - handle error
+                exit(1)
         }
         
-        spriteContext.draw(spriteImage, in: rect)
+        spriteContext.draw(spriteImage, in: rect, byTiling: true)
     
+        glGenTextures(1, &textureObjectId);
+        glBindTexture(GLenum(GL_TEXTURE_2D), textureObjectId);
     
-        var texName = GLuint();
-        glGenTextures(1, &texName);
-        glBindTexture(GLenum(GL_TEXTURE_2D), texName);
+        glTexParameteri(GLenum(GL_TEXTURE_2D), GLenum(GL_TEXTURE_WRAP_S), GL_CLAMP_TO_EDGE);
+        glTexParameteri(GLenum(GL_TEXTURE_2D), GLenum(GL_TEXTURE_WRAP_T), GL_CLAMP_TO_EDGE);
+        glTexParameteri(GLenum(GL_TEXTURE_2D), GLenum(GL_TEXTURE_MIN_FILTER), GL_LINEAR);
+        glTexParameteri(GLenum(GL_TEXTURE_2D), GLenum(GL_TEXTURE_MAG_FILTER), GL_LINEAR_MIPMAP_LINEAR);
     
-        glTexParameteri( GLenum(GL_TEXTURE_2D), GLenum(GL_TEXTURE_MIN_FILTER), GL_NEAREST );
-        glTexParameteri( GLenum(GL_TEXTURE_2D), GLenum(GL_TEXTURE_MAG_FILTER), GL_NEAREST );
-        glTexParameteri( GLenum(GL_TEXTURE_2D), GLenum(GL_TEXTURE_WRAP_S), GL_CLAMP_TO_EDGE );
-        glTexParameteri( GLenum(GL_TEXTURE_2D), GLenum(GL_TEXTURE_WRAP_T), GL_CLAMP_TO_EDGE );
+        glTexImage2D(GLenum(GL_TEXTURE_2D), 0, GL_RGBA, width, height, 0, GLenum(GL_RGBA), GLenum(GL_UNSIGNED_BYTE), pixelData);
     
-        glTexImage2D(GLenum(GL_TEXTURE_2D), 0, GL_RGBA, width, height, 0, GLenum(GL_RGBA), GLenum(GL_UNSIGNED_BYTE), spriteData);
-    
-//        free(spriteData);
-        return texName;
     }
     
     override func draw() {
-        // The size, in memory, of a Vertex structure.
-        let vertexSize = MemoryLayout<Vertex>.stride
         
-        // Enable Transparency
-        glEnable(GLenum(GL_BLEND));
-        glBlendFunc(GLenum(GL_SRC_ALPHA), GLenum(GL_ONE_MINUS_SRC_ALPHA));
-        
-        var shader:Shader = ShaderManager.getShaderWithName("/assets/shaders/cube_shader");
-        glUseProgram(shader.program);
-        
-        // update the attribute color
-        let vertexColorLocation:GLuint = GLuint(shader.getAttribute("a_Color"));
-        glEnableVertexAttribArray(vertexColorLocation);
-        // Pass in the color info
-        glVertexAttribPointer(
-            vertexColorLocation,
-            4,
-            GLenum(GL_FLOAT),
-            GLboolean(GL_FALSE),
-            0,
-            colorBuffer
-        );
- 
-        withUnsafePointer(to: &_projectionMatrix, {
-            $0.withMemoryRebound(to: Float.self, capacity: 16, {
-                glUniformMatrix4fv(shader.getUniform("u_ProjectionMatrix"), 1, 0, $0)
+        if (!renderWithGLKit) {
+            let shader:Shader = ShaderManager.getShaderWithName("assets/shaders/cube_shader");
+            glUseProgram(shader.program);
+            
+            withUnsafePointer(to: &_projectionMatrix, {
+                $0.withMemoryRebound(to: Float.self, capacity: 16, {
+                    glUniformMatrix4fv(shader.getUniform("u_ProjectionMatrix"), 1, 0, $0)
+                })
             })
-        })
-        withUnsafePointer(to: &_modelViewMatrix, {
-            $0.withMemoryRebound(to: Float.self, capacity: 16, {
-                glUniformMatrix4fv(shader.getUniform("u_MvMatrix"), 1, 0, $0)
+            withUnsafePointer(to: &_modelViewMatrix, {
+                $0.withMemoryRebound(to: Float.self, capacity: 16, {
+                    glUniformMatrix4fv(shader.getUniform("u_MvMatrix"), 1, 0, $0)
+                })
             })
-        })
-        
-        let vertexAttribPosition = GLuint(shader.getAttribute("a_Position"))
-        glEnableVertexAttribArray(vertexAttribPosition)
-        glVertexAttribPointer(vertexAttribPosition,
-                              3,
-                              GLenum(GL_FLOAT),
-                              GLboolean(UInt8(GL_FALSE)),
-                              0,
-                              verticesBuffer)
-        
-         let vertexAttribNormal = GLuint(shader.getAttribute("a_Normal"))
-         glEnableVertexAttribArray(vertexAttribNormal)
-         glVertexAttribPointer(vertexAttribNormal,
-                               3,
-                               GLenum(GL_FLOAT),
-                               GLboolean(UInt8(GL_FALSE)),
-                               0,
-                               normalBuffer)
-        
-
-        var lightPos:GLKVector3 = GLKVector3Make(-20, 10, -10)
-        withUnsafePointer(to: &lightPos, {
-            $0.withMemoryRebound(to: Float.self, capacity: 16, {
-                glUniform3fv(shader.getUniform("u_LightPos"), 1, $0)
+            
+            var lightPos:GLKVector3 = GLKVector3Make(0, 0, -10)
+            withUnsafePointer(to: &lightPos, {
+                $0.withMemoryRebound(to: Float.self, capacity: 12, {
+                    glUniform3fv(shader.getUniform("u_LightPos"), 1, $0)
+                })
             })
-        })
+            
+            glBindTexture(GLenum(GL_TEXTURE_2D), textureObjectId);
+        }
         
-        
-        // Set the active texture unit to texture unit 0.
-        glActiveTexture(GLenum(GL_TEXTURE0));
-        // Bind the texture to this unit.
-        glBindTexture(GLenum(GL_TEXTURE_2D), textureObjectId);
-        // Tell the texture uniform sampler to use this texture in the shader by binding to texture unit 0.
-        glUniform1i(shader.getUniform("u_Texture"), 0)
-        
-        // Pass in the texture coordinate information
-        let vertexAttribTexCoord = GLuint(shader.getAttribute("a_TextureCoord"))
-        glVertexAttribPointer(vertexAttribTexCoord,
-                              2,
-                              GLenum(GL_FLOAT),
-                              GLboolean(UInt8(GL_FALSE)),
-                              0,
-                              textureBuffer)
-//        let vertexAttribTexCoord = GLuint(GLKVertexAttrib.texCoord0.rawValue)
-//        let textureOffset = MemoryLayout<GLfloat>.stride * 7
-//        let textureOffsetPointer = UnsafePointer<Int>(bitPattern: textureOffset)
-//        glVertexAttribPointer(vertexAttribTexCoord, 2, GLenum(GL_FLOAT), GLboolean(UInt8(GL_FALSE)), GLsizei(vertexSize), textureOffsetPointer);
-        glEnableVertexAttribArray(vertexAttribTexCoord)
-//        withUnsafePointer(to: &textureBuffer, {
-//            $0.withMemoryRebound(to: Float.self, capacity: 16, {
-//                glUniformMatrix4fv(shader.getUniform("u_Texture"), 1, 0, $0)
-//            })
-//        })
-//        glBindBuffer(GLenum(GL_ARRAY_BUFFER), textureVBO);
- 
-        
-        glBindBuffer(GLenum(GL_ARRAY_BUFFER), vbo)
-        
-//        glDrawElements(GLenum(GL_TRIANGLES), GLsizei(Indices.count), GLenum(GL_UNSIGNED_BYTE), nil)
-        // Draw the cube.
-//        glDrawArrays(GLenum(GL_TRIANGLE_FAN), 0, GLsizei(Indices.count));
-        glDrawArrays(GLenum(GL_TRIANGLE_STRIP), 0, GLsizei(Indices.count));
+        glBindVertexArrayOES(vao);
+        glDrawElements(GLenum(GL_TRIANGLES), GLsizei(Indices.count), GLenum(GL_UNSIGNED_BYTE), nil)
         
         glBindBuffer(GLenum(GL_ARRAY_BUFFER), 0);
         glBindVertexArrayOES(0)
         
-        glDisableVertexAttribArray(vertexAttribPosition);
-        glDisableVertexAttribArray(vertexColorLocation);
-        glDisableVertexAttribArray(vertexAttribNormal);
+//        glDisableVertexAttribArray(vertexAttribPosition);
+//        glDisableVertexAttribArray(vertexColorLocation);
+//        glDisableVertexAttribArray(vertexAttribNormal);
 //        glDisableVertexAttribArray(vertexAttribTexCoord);
         glBindTexture(GLenum(GL_TEXTURE_2D), 0);
         glDisable(GLenum(GL_BLEND));
