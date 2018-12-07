@@ -26,6 +26,8 @@ class Cube : DrawableElement {
     var vao = GLuint()
     
     var textureObjectId = GLuint()
+    var textureObjectIds:[GLuint]=[]
+//    var textureBuffer:[Float]=[]
     
     var Vertices:[Vertex]=[]
     var Indices:[GLubyte]=[]
@@ -35,7 +37,7 @@ class Cube : DrawableElement {
     override init() {
         super.init();
         
-        let ves = VertexGenerator.genOneCubeVertices(position: GLKVector3Make(0, 0, 0), color: (1,0.5,0,1))
+        let ves = VertexGenerator.genOneCubeVertices(position: GLKVector3Make(0, 0, 0), color: (1, 0.5, 0, 1))
         let ins = VertexGenerator.genOneCubeIndices(index: 0)
         Vertices = []
         Indices = []
@@ -130,11 +132,13 @@ class Cube : DrawableElement {
         glVertexAttribPointer(attribute, 2, GLenum(GL_FLOAT), GLboolean(UInt8(GL_FALSE)), stride, textureOffsetPointer);
         glActiveTexture(GLenum(GL_TEXTURE0));
         if (!renderWithGLKit) {
-            configureDefaultTexture(fileName: "assets/textures/texture_numbers.png");
+//            glGenTextures(1, &textureObjectId);
+//            configureDefaultTexture(fileName: "assets/textures/texture_numbers.png", textureObjectId: textureObjectId);
+            loadTextures()
         }
     }
     
-    func configureDefaultTexture(fileName: String) {
+    func configureDefaultTexture(fileName: String, textureObjectId:GLuint) {
         let uiImage = UIImage(named: fileName);
         if (uiImage == nil) {
             print("Failed to load image " + fileName);
@@ -173,7 +177,7 @@ class Cube : DrawableElement {
         
         spriteContext.draw(spriteImage, in: rect, byTiling: true)
     
-        glGenTextures(1, &textureObjectId);
+//        glGenTextures(1, &textureObjectId);
         glBindTexture(GLenum(GL_TEXTURE_2D), textureObjectId);
     
         glTexParameteri(GLenum(GL_TEXTURE_2D), GLenum(GL_TEXTURE_WRAP_S), GL_CLAMP_TO_EDGE);
@@ -182,10 +186,20 @@ class Cube : DrawableElement {
         glTexParameteri(GLenum(GL_TEXTURE_2D), GLenum(GL_TEXTURE_MAG_FILTER), GL_LINEAR_MIPMAP_LINEAR);
     
         glTexImage2D(GLenum(GL_TEXTURE_2D), 0, GL_RGBA, width, height, 0, GLenum(GL_RGBA), GLenum(GL_UNSIGNED_BYTE), pixelData);
+        glBindTexture(GLenum(GL_TEXTURE_2D), 0);
+    }
     
+    func loadTextures() {
+        textureObjectIds = [0,0,0,0,0,0]
+        glGenTextures(6, &textureObjectIds);
+        assert(textureObjectIds.count == 6)
+        for i in (0 ..< 6) {
+            configureDefaultTexture(fileName: "assets/textures/dice"+String(i+1)+".png", textureObjectId: textureObjectIds[i]);
+        }
     }
     
     override func draw() {
+        glBindVertexArrayOES(vao);
         
         if (!renderWithGLKit) {
             let shader:Shader = ShaderManager.getShaderWithName("assets/shaders/cube_shader");
@@ -202,18 +216,26 @@ class Cube : DrawableElement {
                 })
             })
             
-            var lightPos:GLKVector3 = GLKVector3Make(0, 0, -10)
+            var lightPos:GLKVector3 = GLKVector3Make(1, 0, -10)
             withUnsafePointer(to: &lightPos, {
                 $0.withMemoryRebound(to: Float.self, capacity: 12, {
                     glUniform3fv(shader.getUniform("u_LightPos"), 1, $0)
                 })
             })
             
-            glBindTexture(GLenum(GL_TEXTURE_2D), textureObjectId);
+//            glBindTexture(GLenum(GL_TEXTURE_2D), textureObjectId);
+            
+            //Point to our buffers
+            for i in (0 ..< 6) {
+                glBindTexture(GLenum(GL_TEXTURE_2D), textureObjectIds[i]);
+                let indiceOffset = i * 6
+                let indiceOffsetPointer = UnsafePointer<Int>(bitPattern: indiceOffset)
+                glDrawElements(GLenum(GL_TRIANGLES), GLsizei(6), GLenum(GL_UNSIGNED_BYTE), indiceOffsetPointer)
+            }
         }
         
-        glBindVertexArrayOES(vao);
-        glDrawElements(GLenum(GL_TRIANGLES), GLsizei(Indices.count), GLenum(GL_UNSIGNED_BYTE), nil)
+//        glDrawElements(GLenum(GL_TRIANGLES), GLsizei(Indices.count), GLenum(GL_UNSIGNED_BYTE), nil)
+        
         
         glBindBuffer(GLenum(GL_ARRAY_BUFFER), 0);
         glBindVertexArrayOES(0)

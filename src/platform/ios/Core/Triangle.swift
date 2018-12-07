@@ -64,7 +64,7 @@ class Triangle : NSObject {
         // Swift pointer object that stores the offset of the color information within our Vertex structure.
         let colorOffsetPointer = UnsafeRawPointer(bitPattern: colorOffset)
         
-        let normalOffset = MemoryLayout<GLfloat>.stride * 7
+        let normalOffset = MemoryLayout<GLfloat>.stride * 9
         let normalOffsetPointer = UnsafePointer<Int>(bitPattern: normalOffset)
         // Enable the position vertex attribute to then specify information about how the position of a vertex is stored.
         glEnableVertexAttribArray(vertexAttribPosition)

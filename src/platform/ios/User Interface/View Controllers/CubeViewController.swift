@@ -136,11 +136,9 @@ final class CubeViewController: GLKViewController {
     }
     
     func setupEffect() {
-        if (renderWithGLKit) {
-            self.effect.texture2d0.enabled = GLboolean(GL_TRUE)
-            configureDefaultLight()
-            //        configureDefaultMaterial()
-        }
+        self.effect.texture2d0.enabled = GLboolean(GL_TRUE)
+        configureDefaultLight()
+        //        configureDefaultMaterial()
     }
     
     func configureDefaultLight(){
@@ -201,7 +199,7 @@ final class CubeViewController: GLKViewController {
         
         self.camera = SphereCamera(width: view.bounds.width,
                                    height: view.bounds.height)
-//        self.effect.transform.projectionMatrix = self.camera.projection
+        self.effect.transform.projectionMatrix = self.camera.projection
     }
     
     
@@ -361,9 +359,9 @@ final class CubeViewController: GLKViewController {
     
     func drawPickedTriangle(a:GLKVector3, b:GLKVector3, c:GLKVector3) {
         let vertices:[Vertex] = [
-            Vertex(Position: (a.x, a.y, a.z), Color: (0, 0, 0, 1), TexCoord: (x:0, y:1), Normal: (0, 0, -1)),
-            Vertex(Position: (b.x, b.y, b.z), Color: (0, 0, 0, 1), TexCoord: (x:0, y:1), Normal: (0, 0, -1)),
-            Vertex(Position: (c.x, c.y, c.z), Color: (0, 0, 0, 1), TexCoord: (x:0, y:1), Normal: (0, 0, -1)),
+            Vertex(Position: (a.x, a.y, a.z), Color: (1, 0, 0, 0.4), TexCoord: (x:0, y:1), Normal: (0, 0, 1)),
+            Vertex(Position: (b.x, b.y, b.z), Color: (1, 1, 0, 0.4), TexCoord: (x:0, y:1), Normal: (0, 0, 1)),
+            Vertex(Position: (c.x, c.y, c.z), Color: (1, 0, 1, 0.4), TexCoord: (x:0, y:1), Normal: (0, 0, 1)),
             ];
         _triangle.updateVertices(vertices: vertices);
     }
@@ -466,8 +464,8 @@ extension CubeViewController {
         
         _cube.draw();
         
-        //        effect.prepareToDraw()
-//        _triangle.render();
+        effect.prepareToDraw()
+        _triangle.render();
     }
     
     //
