@@ -78,7 +78,7 @@ class Triangle : NSObject {
         glVertexAttribPointer(vertexAttribNormal, 3, GLenum(GL_FLOAT), GLboolean(UInt8(GL_FALSE)), GLsizei(vertexSize), normalOffsetPointer)
         
         // Bind back to the default state.
-        glBindBuffer(GLenum(GL_ARRAY_BUFFER), 0)
+//        glBindBuffer(GLenum(GL_ARRAY_BUFFER), 0)
         
         glBindVertexArrayOES(0)
         
@@ -90,7 +90,7 @@ class Triangle : NSObject {
         createVertexBuffers()
     }
     
-    func render() {
+    func draw() {
         if (vao == 0) {
             return;
         }
@@ -99,7 +99,7 @@ class Triangle : NSObject {
         
         glDrawElements(GLenum(GL_TRIANGLES), GLsizei(Indices.count), GLenum(GL_UNSIGNED_BYTE), nil)
         
-        glBindBuffer(GLenum(GL_ARRAY_BUFFER), 0);
+//        glBindBuffer(GLenum(GL_ARRAY_BUFFER), 0);
         glBindVertexArrayOES(0)
     }
     

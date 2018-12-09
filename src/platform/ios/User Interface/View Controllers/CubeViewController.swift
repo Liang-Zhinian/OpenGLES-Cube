@@ -129,6 +129,10 @@ final class CubeViewController: GLKViewController {
             view.drawableStencilFormat = GLKViewDrawableStencilFormat.format8
             view.drawableMultisample = GLKViewDrawableMultisample.multisample4X
             
+//            let frameWidth = UIScreen.main.bounds.width
+//            let frameHeight = UIScreen.main.bounds.height
+//            view.bounds = CGRect(x: 0, y: 0, width: frameWidth, height: frameHeight)
+            
             // Set ourselves as delegates of GLKViewControllerDelegate
             delegate = self
         }
@@ -372,6 +376,7 @@ final class CubeViewController: GLKViewController {
 //
 extension CubeViewController: GLKViewControllerDelegate {
     func glkViewControllerUpdate(_ controller: GLKViewController) {
+        return;
         
         if (_increasing) {
             _curRed += Float(1.0 * self.timeSinceLastUpdate);
@@ -453,6 +458,65 @@ extension CubeViewController {
     ///   - view: The GLKView object to redraw contents into.
     ///   - rect: Rectangle that describes the area to draw into.
     override func glkView(_ view: GLKView, drawIn rect: CGRect) {
+        
+        if (_increasing) {
+            _curRed += Float(1.0 * self.timeSinceLastUpdate);
+        } else {
+            _curRed -= Float(1.0 * self.timeSinceLastUpdate);
+        }
+        if (_curRed >= 1.0) {
+            _curRed = 1.0;
+            _increasing = false;
+        }
+        if (_curRed <= 0.0) {
+            _curRed = 0.0;
+            _increasing = true;
+        }
+        
+        if (_autoRotate) {
+            self.rotation += Float(self.timeSinceLastUpdate * 0.5);
+        }
+        
+        let aspect = fabsf(Float(view.bounds.size.width) / Float(view.bounds.size.height))
+        let projectionMatrix = GLKMatrix4MakePerspective(GLKMathDegreesToRadians(65.0), aspect, 0.1, 100.0);
+        self.effect.transform.projectionMatrix = projectionMatrix
+        _projectionMatrix = projectionMatrix
+        
+        if (_slerping) {
+            _slerpCur += Float(self.timeSinceLastUpdate);
+            var slerpAmt:Float = _slerpCur / _slerpMax;
+            if (slerpAmt > 1.0) {
+                slerpAmt = 1.0;
+                _slerping = false;
+            }
+            
+            _quat = GLKQuaternionSlerp(_slerpStart, _slerpEnd, slerpAmt);
+        }
+        
+        let scaleMatrix:GLKMatrix4 = GLKMatrix4MakeScale(1.0, 1.0, 1.0);
+        var rotationMatrix:GLKMatrix4 = GLKMatrix4MakeWithQuaternion(_quat);
+        
+        // Compute the model view matrix for the object rendered with GLKit
+        var modelViewMatrix:GLKMatrix4 = GLKMatrix4MakeTranslation(0.0, 0.0, -6.0);
+        //        modelViewMatrix = GLKMatrix4Multiply(modelViewMatrix, self.camera.view);
+        modelViewMatrix = GLKMatrix4Multiply(modelViewMatrix, rotationMatrix);
+        modelViewMatrix = GLKMatrix4Multiply(modelViewMatrix, scaleMatrix);
+        
+        self.effect.transform.modelviewMatrix = modelViewMatrix
+        _modelViewMatrix = modelViewMatrix
+        
+        // Compute the model view matrix for the object rendered with ES2
+        modelViewMatrix = GLKMatrix4MakeTranslation(0.0, 0.0, -6.0);
+        //        modelViewMatrix = GLKMatrix4Multiply(modelViewMatrix, self.camera.view);
+        modelViewMatrix = GLKMatrix4Multiply(modelViewMatrix, rotationMatrix);
+        modelViewMatrix = GLKMatrix4Multiply(modelViewMatrix, scaleMatrix);
+        
+        _normalMatrix = GLKMatrix3InvertAndTranspose(GLKMatrix4GetMatrix3(modelViewMatrix), nil);
+        
+        _modelViewProjectionMatrix = GLKMatrix4Multiply(projectionMatrix, modelViewMatrix);
+        
+        updateDE(_cube)
+        
         // Set the color we want to clear the screen with (before drawing) to black.
         glClearColor(_curRed, 0.85, 0.85, 1.0)
         // Clear the contents of the screen (the color buffer) with the black color we just set.
@@ -465,7 +529,7 @@ extension CubeViewController {
         _cube.draw();
         
         effect.prepareToDraw()
-        _triangle.render();
+        _triangle.draw();
     }
     
     //

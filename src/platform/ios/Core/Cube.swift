@@ -95,7 +95,7 @@ class Cube : DrawableElement {
         configureTexture(attribute: vertexAttribTexCoord0, stride: GLsizei(vertexSize))
         configureNormal(attribute: vertexAttribNormal, stride: GLsizei(vertexSize))
         
-        glBindBuffer(GLenum(GL_ARRAY_BUFFER), 0);
+//        glBindBuffer(GLenum(GL_ARRAY_BUFFER), 0);
         
         // were done so unbind the VAO
         glBindVertexArrayOES(0);
@@ -237,13 +237,9 @@ class Cube : DrawableElement {
 //        glDrawElements(GLenum(GL_TRIANGLES), GLsizei(Indices.count), GLenum(GL_UNSIGNED_BYTE), nil)
         
         
-        glBindBuffer(GLenum(GL_ARRAY_BUFFER), 0);
+//        glBindBuffer(GLenum(GL_ARRAY_BUFFER), 0);
         glBindVertexArrayOES(0)
         
-//        glDisableVertexAttribArray(vertexAttribPosition);
-//        glDisableVertexAttribArray(vertexColorLocation);
-//        glDisableVertexAttribArray(vertexAttribNormal);
-//        glDisableVertexAttribArray(vertexAttribTexCoord);
         glBindTexture(GLenum(GL_TEXTURE_2D), 0);
         glDisable(GLenum(GL_BLEND));
     }

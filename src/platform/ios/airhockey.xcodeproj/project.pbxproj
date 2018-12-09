@@ -49,6 +49,8 @@
 		0ADF1892178E2185005DA99E /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 0ADF1891178E2185005DA99E /* Default-568h@2x.png */; };
 		0ADF1895178E2185005DA99E /* MainStoryboard_iPhone.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0ADF1893178E2185005DA99E /* MainStoryboard_iPhone.storyboard */; };
 		0ADF1898178E2185005DA99E /* MainStoryboard_iPad.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0ADF1896178E2185005DA99E /* MainStoryboard_iPad.storyboard */; };
+		8A046C1A21BCCE1100FA59F2 /* GLCubeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A046C1921BCCE1100FA59F2 /* GLCubeView.swift */; };
+		8A046C1C21BCCF5500FA59F2 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A046C1B21BCCF5500FA59F2 /* ViewController.swift */; };
 		8A4B88EE21B7AC25007A8974 /* ShaderManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 8A4B88ED21B7AC25007A8974 /* ShaderManager.m */; };
 		8A4B88F121B7B256007A8974 /* DrawableElement.m in Sources */ = {isa = PBXBuildFile; fileRef = 8A4B88F021B7B256007A8974 /* DrawableElement.m */; };
 		8A5AE6BE21B2D4A30042B047 /* Array+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A5AE6B421B2D4A30042B047 /* Array+Helpers.swift */; };
@@ -131,6 +133,8 @@
 		0ADF1897178E2185005DA99E /* en */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = en; path = en.lproj/MainStoryboard_iPad.storyboard; sourceTree = "<group>"; };
 		0ADF189D178E2185005DA99E /* AirHockeyViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AirHockeyViewController.h; sourceTree = "<group>"; };
 		0ADF189E178E2185005DA99E /* AirHockeyViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AirHockeyViewController.m; sourceTree = "<group>"; };
+		8A046C1921BCCE1100FA59F2 /* GLCubeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GLCubeView.swift; sourceTree = "<group>"; };
+		8A046C1B21BCCF5500FA59F2 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		8A4B88EC21B7AC25007A8974 /* ShaderManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ShaderManager.h; sourceTree = "<group>"; };
 		8A4B88ED21B7AC25007A8974 /* ShaderManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ShaderManager.m; sourceTree = "<group>"; };
 		8A4B88EF21B7B256007A8974 /* DrawableElement.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DrawableElement.h; sourceTree = "<group>"; };
@@ -312,6 +316,14 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
+		8A046C1821BCCDFB00FA59F2 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				8A046C1921BCCE1100FA59F2 /* GLCubeView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
 		8A5AE6B321B2D4A30042B047 /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
@@ -335,6 +347,7 @@
 		8A5AE6BA21B2D4A30042B047 /* User Interface */ = {
 			isa = PBXGroup;
 			children = (
+				8A046C1821BCCDFB00FA59F2 /* Views */,
 				8A5AE6BB21B2D4A30042B047 /* View Controllers */,
 			);
 			path = "User Interface";
@@ -346,6 +359,7 @@
 				0ADF189D178E2185005DA99E /* AirHockeyViewController.h */,
 				0ADF189E178E2185005DA99E /* AirHockeyViewController.m */,
 				8A5AE6BC21B2D4A30042B047 /* CubeViewController.swift */,
+				8A046C1B21BCCF5500FA59F2 /* ViewController.swift */,
 			);
 			path = "View Controllers";
 			sourceTree = "<group>";
@@ -454,6 +468,7 @@
 				0A8FBF8D179E07440039BA29 /* platform_asset_utils.m in Sources */,
 				8AD1F02E21B7FF6400506882 /* CubeModel.swift in Sources */,
 				0A8FBF8E179E07440039BA29 /* AppDelegate.m in Sources */,
+				8A046C1A21BCCE1100FA59F2 /* GLCubeView.swift in Sources */,
 				0A8FBF8F179E07440039BA29 /* AirHockeyViewController.m in Sources */,
 				0A8FBF90179E07440039BA29 /* main.m in Sources */,
 				0A8FBF8B179E073A0039BA29 /* platform_file_utils.c in Sources */,
@@ -471,6 +486,7 @@
 				0A8FBF82179E07320039BA29 /* pngrio.c in Sources */,
 				0A8FBF83179E07320039BA29 /* pngrtran.c in Sources */,
 				0A8FBF84179E07320039BA29 /* pngrutil.c in Sources */,
+				8A046C1C21BCCF5500FA59F2 /* ViewController.swift in Sources */,
 				0A8FBF85179E07320039BA29 /* pngset.c in Sources */,
 				8AAEDBE221B62C08006A8AFB /* Ray.swift in Sources */,
 				0A8FBF86179E07320039BA29 /* pngtrans.c in Sources */,
