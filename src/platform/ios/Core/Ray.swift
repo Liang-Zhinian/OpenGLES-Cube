@@ -17,17 +17,11 @@ class Ray : NSObject {
         super.init()
         
         print("init1 => width: "+String(width)+", height: "+String(height))
-        // translate mouse coordinates so that the origin lies in the center
-        // of the view port
-        var xPoint = x - width / 2
-        var yPoint = y - height / 2
-        xPoint = xPoint/width * 2
-        yPoint = -yPoint/height * 2
         
         let scalar:Float = Float(UIScreen.main.scale)
         
-        xPoint = xPoint * scalar
-        yPoint = yPoint * scalar
+        let xPoint = x * scalar
+        let yPoint = y * scalar
         
         print("init1 => xPoint: "+String(xPoint)+", yPoint: "+String(yPoint))
         
@@ -52,6 +46,7 @@ class Ray : NSObject {
                                projectionMatrix,
                                &viewport[0] ,
                                &testResult);
+        far = GLKVector3Subtract(far, near);
         
         print("init1 => near : " + String(near.x) + " " + String(near.y) + " " + String(near.z))
         print("init1 => far : " + String(far.x) + " " + String(far.y) + " " + String(far.z))
@@ -93,6 +88,7 @@ class Ray : NSObject {
         // view port plane
         near = GLKVector3Add(camera.position, direction)
         far = GLKVector3Add(camera.position, GLKVector3MultiplyScalar(direction, camera.far / camera.near))
+        far = GLKVector3Subtract(far, near);
         
         print("init2 => near : " + String(near.x) + " " + String(near.y) + " " + String(near.z))
         print("init2 => far : " + String(far.x) + " " + String(far.y) + " " + String(far.z))
@@ -101,8 +97,8 @@ class Ray : NSObject {
     func intersectsTriangle(a: GLKVector3, b: GLKVector3, c: GLKVector3, normal:GLKVector3) -> (intersect:Bool, result:GLKVector3?){
         //follow http://sarvanz.blogspot.com/2012/03/probing-using-ray-casting-in-opengl.html
         
-        let ray = GLKVector3Subtract(far, near)
-        let nDotL = GLKVector3DotProduct(normal, ray)
+//        let ray = GLKVector3Subtract(far, near)
+        let nDotL = GLKVector3DotProduct(normal, far)
         //是否跟三角面在同一平面或者背对三角面
         if nDotL >= 0 {
             return (intersect:false, result:nil)
@@ -114,7 +110,7 @@ class Ray : NSObject {
             return (intersect:false, result:nil)
         }
         
-        let p = GLKVector3Add(near, GLKVector3MultiplyScalar(ray, d))
+        let p = GLKVector3Add(near, GLKVector3MultiplyScalar(far, d))
         let n1 = GLKVector3CrossProduct( GLKVector3Subtract(b, a),  GLKVector3Subtract(p, a))
         let n2 = GLKVector3CrossProduct( GLKVector3Subtract(c, b),  GLKVector3Subtract(p, b))
         let n3 = GLKVector3CrossProduct( GLKVector3Subtract(a, c),  GLKVector3Subtract(p, c))

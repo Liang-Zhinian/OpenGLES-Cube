@@ -15,10 +15,16 @@ class ViewController: UIViewController {
         
         self.view.backgroundColor = UIColor.lightGray
         
-        let frame = UIScreen.main.bounds
-        let _glView = GLCubeView(frame: CGRect(x: 0, y: 0, width: frame.size.width, height: frame.size.height))
-        
+        let scalar = UIScreen.main.scale
+        let bounds = UIScreen.main.bounds
+        let _glView = GLCubeView(frame: CGRect(x: 0, y: 0, width: bounds.size.width, height: bounds.size.height))
+//        _glView.frame = CGRect(x: 0, y: 0, width: bounds.size.width, height: bounds.size.height)
+
         self.view.addSubview(_glView)
+        
+//        let cubeViewController:CubeViewController = CubeViewController(nibName: nil, bundle: nil);
+//
+//        self.view.addSubview(cubeViewController.view);
     }
     
     override func didReceiveMemoryWarning() {

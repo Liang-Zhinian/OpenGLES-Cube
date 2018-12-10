@@ -124,9 +124,9 @@ import UIKit
     }
     
     func resize() {
-        self.camera = SphereCamera(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height)
-//        self.camera = SphereCamera(width: self.bounds.width, height: self.bounds.height)
-//        self.effect.transform.projectionMatrix = self.camera.projection
+//        self.camera = SphereCamera(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height)
+        self.camera = SphereCamera(width: self.bounds.width, height: self.bounds.height)
+        self.effect.transform.projectionMatrix = self.camera.projection
     }
     
     func setupContext() -> Int {
@@ -235,7 +235,7 @@ import UIKit
     func drawCube(displayLink: CADisplayLink) {
         
         let aspect = fabsf(Float(self.bounds.size.width) / Float(self.bounds.size.height))
-        let projectionMatrix = self.camera.projection // GLKMatrix4MakePerspective(GLKMathDegreesToRadians(65.0), aspect, 0.1, 100.0);
+        let projectionMatrix = self.camera.projection //GLKMatrix4MakePerspective(GLKMathDegreesToRadians(65.0), aspect, 0.1, 100.0);
         self.effect.transform.projectionMatrix = projectionMatrix
         _projectionMatrix = projectionMatrix
         
@@ -243,19 +243,21 @@ import UIKit
         var rotationMatrix:GLKMatrix4 = GLKMatrix4MakeWithQuaternion(_quat);
         
         // Compute the model view matrix for the object rendered with GLKit
-        var modelViewMatrix:GLKMatrix4 = GLKMatrix4MakeTranslation(0.0, 0.0, 0.0);
-        modelViewMatrix = GLKMatrix4Multiply(modelViewMatrix, self.camera.view);
+        var modelViewMatrix:GLKMatrix4 = GLKMatrix4MakeTranslation(0.0, 0.0, -6.0);
+//        modelViewMatrix = GLKMatrix4Multiply(modelViewMatrix, self.camera.view);
         modelViewMatrix = GLKMatrix4Multiply(modelViewMatrix, rotationMatrix);
         modelViewMatrix = GLKMatrix4Multiply(modelViewMatrix, scaleMatrix);
+        modelViewMatrix = self.camera.view
         
         self.effect.transform.modelviewMatrix = modelViewMatrix
         _modelViewMatrix = modelViewMatrix
         
         // Compute the model view matrix for the object rendered with ES2
-        modelViewMatrix = GLKMatrix4MakeTranslation(0.0, 0.0, 0.0);
-        modelViewMatrix = GLKMatrix4Multiply(modelViewMatrix, self.camera.view);
+        modelViewMatrix = GLKMatrix4MakeTranslation(0.0, 0.0, -6.0);
+//        modelViewMatrix = GLKMatrix4Multiply(modelViewMatrix, self.camera.view);
         modelViewMatrix = GLKMatrix4Multiply(modelViewMatrix, rotationMatrix);
         modelViewMatrix = GLKMatrix4Multiply(modelViewMatrix, scaleMatrix);
+        modelViewMatrix = self.camera.view
         
         _normalMatrix = GLKMatrix3InvertAndTranspose(GLKMatrix4GetMatrix3(modelViewMatrix), nil);
         
@@ -292,17 +294,10 @@ import UIKit
             let location = touch.location(in: self)
             _anchor_position = GLKVector3Make(Float(location.x), Float(location.y), 0)
             _current_position = _anchor_position
-            
-            _quatStart = _quat;
-            
             _beta = self.camera.beta
             _garma = self.camera.garma
-            
-            let normalizedPoint = getNormalizedPoint(in: self, locationInView: location)
-//                        pick(x: Float(normalizedPoint.x), y: Float(normalizedPoint.y))
             pick(x: Float(_anchor_position.x), y: Float(_anchor_position.y))
             
-            _anchor_position = projectOntoSurface(touchPoint: _anchor_position);
         }
     }
     
@@ -311,28 +306,13 @@ import UIKit
         if touches.count >= 1{
             let touch:UITouch = touches.first!
             let location = touch.location(in: self)
-            let lastLoc:CGPoint = touch.previousLocation(in: self)
-            let diff:CGPoint = CGPoint(x:lastLoc.x - location.x, y:lastLoc.y - location.y)
-            
-            let rotX:Float = -1 * GLKMathDegreesToRadians(Float(diff.y / 2.0));
-            let rotY:Float = -1 * GLKMathDegreesToRadians(Float(diff.x / 2.0));
-            
-            var isInvertible:Bool = false
-            let xAxis:GLKVector3 = GLKMatrix4MultiplyVector3(GLKMatrix4Invert(_rotMatrix, &isInvertible), GLKVector3Make(1, 0, 0))
-            _rotMatrix = GLKMatrix4Rotate(_rotMatrix, rotX, xAxis.x, xAxis.y, xAxis.z);
-            let yAxis:GLKVector3 = GLKMatrix4MultiplyVector3(GLKMatrix4Invert(_rotMatrix, &isInvertible), GLKVector3Make(0, 1, 0))
-            _rotMatrix = GLKMatrix4Rotate(_rotMatrix, rotY, yAxis.x, yAxis.y, yAxis.z)
-            
             _current_position = GLKVector3Make(Float(location.x), Float(location.y), 0)
-            _current_position = projectOntoSurface(touchPoint: _current_position)
-            
-            computeIncremental()
-            
-            
+            let diff = CGPoint(x: CGFloat(_current_position.x - _anchor_position.x), y: CGFloat(_current_position.y - _anchor_position.y))
             let beta = GLKMathDegreesToRadians(Float(diff.y) / 2.0);
             let garma = GLKMathDegreesToRadians(Float(diff.x) / 2.0);
             
             self.camera.update(beta: _beta + beta, garma: _garma + garma)
+            
         }
     }
     
@@ -390,13 +370,11 @@ import UIKit
     }
     
     func pick(x:Float, y:Float){
-        
         let width = Float(self.camera.width)
         let height = Float(self.camera.height)
         
-        let ray = Ray(x:x, y:y, width: width, height: height, modelviewMatrix: self.camera.view, projectionMatrix: self.camera.projection);
-//        let ray = Ray(x:x, y:y, width: width, height: height, modelviewMatrix: _modelViewMatrix, projectionMatrix: _projectionMatrix);
-        let ray2 = Ray(x:x, y:y, camera: self.camera);
+//        let ray = Ray(x:x, y:y, width: width, height: height, modelviewMatrix: effect.transform.modelviewMatrix, projectionMatrix: effect.transform.projectionMatrix);
+        let ray = Ray(x:x, y:y, camera: self.camera);
         let points = _cube.intersect(ray:ray)
         if (points.count >= 3) {
             drawPickedTriangle(a:points[0], b:points[1], c:points[2])
