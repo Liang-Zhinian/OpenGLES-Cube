@@ -25,12 +25,19 @@ class Cube : DrawableElement {
     /// vertex attribute calls.
     var vao = GLuint()
     
-    var textureObjectId = GLuint()
     var textureObjectIds:[GLuint]=[]
-//    var textureBuffer:[Float]=[]
+    var textureImageUris:[String]=[
+        "https://divnil.com/iphone/img/app/i/p/iphone-4s-wallpapers-mobile-backgrounds-dark_2466f886de3472ef1fa968033f1da3e1_raw_1087fae1932cec8837695934b7eb1250_raw.jpg",
+        "assets/textures/dice2.png",
+        "assets/textures/dice3.png",
+        "assets/textures/dice4.png",
+        "assets/textures/dice5.png",
+        "assets/textures/dice6.png",
+    ]
     
     var Vertices:[Vertex]=[]
     var Indices:[GLubyte]=[]
+    var glRects:[GLRect]=[]
     
     var renderWithGLKit:Bool = false
     
@@ -46,6 +53,19 @@ class Cube : DrawableElement {
         
         for i in (0 ..< Vertices.count) {
             let vertex = Vertices[i]
+            let faceIndex = Int(i / 4)
+            let newFace:Bool = i % 4 == 0
+            if (newFace) {
+                let glrect = GLRect("face "+String(faceIndex))
+                
+                let offset = faceIndex * 6
+//                let glrect = glRects[faceIndex]
+                glrect.appendIndice([self.Indices[offset], self.Indices[offset+1], self.Indices[offset+2], self.Indices[offset+3], self.Indices[offset+4], self.Indices[offset+5]])
+                
+                glRects.append(glrect)
+                
+            }
+            glRects[faceIndex].appendVertice(vertex)
 //            verticesBuffer.append(contentsOf: [vertex.Position.x, vertex.Position.y, vertex.Position.z])
 //            colorBuffer.append(contentsOf: [vertex.Color.r, vertex.Color.g, vertex.Color.b, vertex.Color.a])
 //            textureBuffer.append(contentsOf: [vertex.TexCoord.x, vertex.TexCoord.y])
@@ -132,14 +152,26 @@ class Cube : DrawableElement {
         glVertexAttribPointer(attribute, 2, GLenum(GL_FLOAT), GLboolean(UInt8(GL_FALSE)), stride, textureOffsetPointer);
         glActiveTexture(GLenum(GL_TEXTURE0));
         if (!renderWithGLKit) {
-//            glGenTextures(1, &textureObjectId);
-//            configureDefaultTexture(fileName: "assets/textures/texture_numbers.png", textureObjectId: textureObjectId);
             loadTextures()
         }
     }
     
     func configureDefaultTexture(fileName: String, textureObjectId:GLuint) {
-        let uiImage = UIImage(named: fileName);
+        var uiImage:UIImage!;
+        if (fileName.hasPrefix("http://") || fileName.hasPrefix("https://")) {
+            let url = NSURL(string: fileName);
+            do {
+                var imageData :NSData = try NSData(contentsOf: url! as URL)
+                if (imageData == nil) {
+                    print("Failed to load image " + fileName);
+                    exit(1);
+                }
+                uiImage = UIImage(data:imageData as Data)
+            } catch {}
+            
+        } else {
+            uiImage = UIImage(named: fileName);
+        }
         if (uiImage == nil) {
             print("Failed to load image " + fileName);
             exit(1);
@@ -193,8 +225,8 @@ class Cube : DrawableElement {
         textureObjectIds = [0,0,0,0,0,0]
         glGenTextures(6, &textureObjectIds);
         assert(textureObjectIds.count == 6)
-        for i in (0 ..< 6) {
-            configureDefaultTexture(fileName: "assets/textures/dice"+String(i+1)+".png", textureObjectId: textureObjectIds[i]);
+        for i in (0 ..< textureImageUris.count) {
+            configureDefaultTexture(fileName: textureImageUris[i], textureObjectId: textureObjectIds[i])
         }
     }
     
@@ -222,8 +254,6 @@ class Cube : DrawableElement {
                     glUniform3fv(shader.getUniform("u_LightPos"), 1, $0)
                 })
             })
-            
-//            glBindTexture(GLenum(GL_TEXTURE_2D), textureObjectId);
             
             //Point to our buffers
             for i in (0 ..< 6) {
@@ -266,6 +296,26 @@ class Cube : DrawableElement {
                 if data.intersect {
                     print("intersect point: " + String( data.result!.x) + " " + String( data.result!.y) + " " + String( data.result!.z) + " " + String(index / 3))
                     result.append(contentsOf:[a,b,c])
+                }
+            }
+        }
+        for face in glRects {
+            for index in (1 ..< (face.indices.count+1)) {
+                if index != 1 && index % 3 == 0{
+                    let aa = face.vertices[Int(face.indices[index-3])].Position
+                    let bb = face.vertices[Int(face.indices[index-2])].Position
+                    let cc = face.vertices[Int(face.indices[index-1])].Position
+                    let nn = face.vertices[Int(face.indices[index-1])].Normal
+                    let a:GLKVector3 = GLKVector3Make(aa.x, aa.y, aa.z)
+                    let b:GLKVector3 = GLKVector3Make(bb.x, bb.y, bb.z)
+                    let c:GLKVector3 = GLKVector3Make(cc.x, cc.y, cc.z)
+                    let n:GLKVector3 = GLKVector3Make(Float(nn.x), Float(nn.y), Float(nn.z))
+                    let data = ray.intersectsTriangle(a: a, b: b, c: c, normal:n)
+                    if data.intersect {
+//                        print("intersect point: " + String( data.result!.x) + " " + String( data.result!.y) + " " + String( data.result!.z) + " " + String(index / 3))
+//                        result.append(contentsOf:[a,b,c])
+                        print("intersect face: " + face.Id)
+                    }
                 }
             }
         }

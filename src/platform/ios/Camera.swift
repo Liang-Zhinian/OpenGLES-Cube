@@ -25,7 +25,7 @@ import GLKit
     var target :GLKVector3
     let up = GLKVector3Make(0.0, 1.0, 0.0)
     
-    init (width: CGFloat, height: CGFloat, fieldOfView: GLfloat = 60, near: GLfloat = 2, far: GLfloat = 50, beta:Float = 0, garma:Float = 0, radius:Float = 30, target:GLKVector3 = GLKVector3Make(0,0,0)){
+    init (width: CGFloat, height: CGFloat, fieldOfView: GLfloat = 65, near: GLfloat = 0.1, far: GLfloat = 100, beta:Float = 0, garma:Float = 0, radius:Float = 7, target:GLKVector3 = GLKVector3Make(0,0,0)){
         self.target = target
         self.radius = radius
         self.beta = beta
