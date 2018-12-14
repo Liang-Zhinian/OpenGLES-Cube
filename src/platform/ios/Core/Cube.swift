@@ -58,9 +58,8 @@ class Cube : DrawableElement {
             if (newFace) {
                 let glrect = GLRect("face "+String(faceIndex))
                 
-                let offset = faceIndex * 6
-//                let glrect = glRects[faceIndex]
-                glrect.appendIndice([self.Indices[offset], self.Indices[offset+1], self.Indices[offset+2], self.Indices[offset+3], self.Indices[offset+4], self.Indices[offset+5]])
+//                let offset = faceIndex * 6
+//                glrect.appendIndice([self.Indices[offset], self.Indices[offset+1], self.Indices[offset+2], self.Indices[offset+3], self.Indices[offset+4], self.Indices[offset+5]])
                 
                 glRects.append(glrect)
                 

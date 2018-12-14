@@ -11,7 +11,10 @@ import Foundation
 class GLRect : NSObject {
     var Id:String = "missing Id";
     var vertices:[Vertex] = []
-    var indices: [GLubyte] = []
+    var indices: [GLubyte] = [
+        0, 1, 2,
+        2, 3, 0
+    ]
     
     init(_ id:String) {
         super.init()

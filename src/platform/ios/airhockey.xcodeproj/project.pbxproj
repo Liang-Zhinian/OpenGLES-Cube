@@ -611,7 +611,7 @@
 				GCC_PREFIX_HEADER = "airhockey-Prefix.pch";
 				HEADER_SEARCH_PATHS = ../../3rdparty/libpng;
 				INFOPLIST_FILE = "airhockey-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.atpath.airhockey;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -638,7 +638,7 @@
 				GCC_PREFIX_HEADER = "airhockey-Prefix.pch";
 				HEADER_SEARCH_PATHS = ../../3rdparty/libpng;
 				INFOPLIST_FILE = "airhockey-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.atpath.airhockey;
 				PRODUCT_NAME = "$(TARGET_NAME)";

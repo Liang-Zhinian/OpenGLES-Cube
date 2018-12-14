@@ -296,8 +296,10 @@ import UIKit
             _current_position = _anchor_position
             _beta = self.camera.beta
             _garma = self.camera.garma
-            pick(x: Float(_anchor_position.x), y: Float(_anchor_position.y))
             
+            _quatStart = _quat;
+            
+            _anchor_position = projectOntoSurface(touchPoint: _anchor_position);
         }
     }
     
@@ -313,7 +315,26 @@ import UIKit
             
             self.camera.update(beta: _beta + beta, garma: _garma + garma)
             
+            let previousLocation:CGPoint = touch.previousLocation(in: self)
+            let diff2:CGPoint = CGPoint(x:previousLocation.x - location.x, y:previousLocation.y - location.y)
+            
+            let rotX:Float = -1 * GLKMathDegreesToRadians(Float(diff2.y / 2.0));
+            let rotY:Float = -1 * GLKMathDegreesToRadians(Float(diff2.x / 2.0));
+            
+            var isInvertible:Bool = false
+            let xAxis:GLKVector3 = GLKMatrix4MultiplyVector3(GLKMatrix4Invert(_rotMatrix, &isInvertible), GLKVector3Make(1, 0, 0))
+            _rotMatrix = GLKMatrix4Rotate(_rotMatrix, rotX, xAxis.x, xAxis.y, xAxis.z);
+            let yAxis:GLKVector3 = GLKMatrix4MultiplyVector3(GLKMatrix4Invert(_rotMatrix, &isInvertible), GLKVector3Make(0, 1, 0))
+            _rotMatrix = GLKMatrix4Rotate(_rotMatrix, rotY, yAxis.x, yAxis.y, yAxis.z)
+            
+            _current_position = projectOntoSurface(touchPoint: _current_position)
+            
+            computeIncremental()
         }
+    }
+    
+    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
+        pick(x: Float(_anchor_position.x), y: Float(_anchor_position.y))
     }
     
     func doubleTap(tap: UITapGestureRecognizer) {
