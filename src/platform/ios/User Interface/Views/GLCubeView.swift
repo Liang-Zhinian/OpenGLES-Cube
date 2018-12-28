@@ -310,6 +310,8 @@ import UIKit
             let location = touch.location(in: self)
             _current_position = GLKVector3Make(Float(location.x), Float(location.y), 0)
             let diff = CGPoint(x: CGFloat(_current_position.x - _anchor_position.x), y: CGFloat(_current_position.y - _anchor_position.y))
+            // As the user drags, we use GLKMatrix4Rotate to rotate the cube a number of degrees.
+            // For every pixel the user drags, we rotate the cube 1/2 degree.
             let beta = GLKMathDegreesToRadians(Float(diff.y) / 2.0);
             let garma = GLKMathDegreesToRadians(Float(diff.x) / 2.0);
             
@@ -320,6 +322,12 @@ import UIKit
             
             let rotX:Float = -1 * GLKMathDegreesToRadians(Float(diff2.y / 2.0));
             let rotY:Float = -1 * GLKMathDegreesToRadians(Float(diff2.x / 2.0));
+            /*
+            GLKVector3 xAxis = GLKVector3Make(1, 0, 0);
+            _rotMatrix = GLKMatrix4Rotate(_rotMatrix, rotX, xAxis.x, xAxis.y, xAxis.z);
+            GLKVector3 yAxis = GLKVector3Make(0, 1, 0);
+            _rotMatrix = GLKMatrix4Rotate(_rotMatrix, rotY, yAxis.x, yAxis.y, yAxis.z);
+            */
             
             var isInvertible:Bool = false
             let xAxis:GLKVector3 = GLKMatrix4MultiplyVector3(GLKMatrix4Invert(_rotMatrix, &isInvertible), GLKVector3Make(1, 0, 0))
@@ -347,8 +355,12 @@ import UIKit
         
     }
     
+    // convert a 2D touch point to a point on a virtual 3D sphere surrounding the object
     func projectOntoSurface(touchPoint :GLKVector3 ) -> GLKVector3
     {
+        // Imagine we have a virtual sphere surrounding our object, with a radius of 1/3 the screen width.
+        // The center of the sphere is the center of the object we’re rotating.
+        // We want to let the user “grab and drag” this sphere to rotate the object.
         let radius:Float = Float(self.bounds.size.width/3)
         let center:GLKVector3 = GLKVector3Make(Float(self.bounds.size.width/2), Float(self.bounds.size.height/2), 0)
         var P:GLKVector3 = GLKVector3Subtract(touchPoint, center)
